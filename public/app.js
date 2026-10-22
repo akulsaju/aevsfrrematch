@@ -11,8 +11,12 @@ const setFile = (input, file) => { const dt = new DataTransfer(); dt.items.add(f
 function show(tab) {
   document.querySelectorAll('section').forEach(s => s.classList.toggle('active', s.id === tab));
   document.querySelectorAll('nav button').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+  window.scrollTo(0, 0);
 }
 $('nav').onclick = e => { const b = e.target.closest('button[data-tab]'); b && show(b.dataset.tab); };
+$('homeLink').onclick = () => show('home');
+$('homeLink').onkeydown = e => e.key === 'Enter' && show('home');
+document.querySelectorAll('.tile').forEach(t => t.onclick = e => { e.preventDefault(); show(t.dataset.go); });
 
 /* ---------- 1. OSINT audit ---------- */
 let lastReport = null;

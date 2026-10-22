@@ -61,3 +61,13 @@ a{color:#7fb0ff;text-decoration:none}a:hover{text-decoration:underline}
 .dropzone{display:flex;flex-direction:column;align-items:center;gap:4px;padding:26px;border:2px dashed var(--line);border-radius:var(--r);cursor:pointer;text-align:center;transition:.15s;margin:10px 0;color:var(--fg)}
 .dropzone:hover,.dropzone.over{border-color:var(--acc);background:rgba(79,140,255,.08)}.dzi{font-size:30px}
 .xrow .row{margin:6px 0 0}
+.hero.big{text-align:center;padding:30px 0 26px}.hero.big p{margin:0 auto}.hero.big h2{font-size:42px}
+.herologo{height:110px;width:auto;margin-bottom:14px;filter:drop-shadow(0 6px 28px rgba(0,200,255,.4))}
+.badges.center{justify-content:center}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin:10px 0 22px}
+.tile{display:flex;flex-direction:column;gap:6px;padding:24px;border:1px solid var(--line);border-radius:var(--r);background:linear-gradient(180deg,var(--panel),var(--panel2));color:var(--fg);text-decoration:none;transition:.2s;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.tile:hover{transform:translateY(-4px);border-color:var(--acc);box-shadow:0 14px 36px rgba(79,140,255,.25);text-decoration:none}
+.tile h3{margin:4px 0 0;font-size:19px}.tile p{margin:0;color:var(--mut);flex:1}.ti{font-size:34px}
+.tile .go{margin-top:10px;color:#7fb0ff;font-weight:600}
+.brand{cursor:pointer}.made{margin-top:6px}.made b{background:linear-gradient(90deg,#1a5cff,#00e5ff);-webkit-background-clip:text;background-clip:text;color:transparent}
+@media(max-width:800px){.tiles{grid-template-columns:1fr}.hero.big h2{font-size:30px}}
