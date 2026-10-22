@@ -54,8 +54,10 @@
 <div><h3>Join</h3><div class="row"><input type="text" id="joinCode" maxlength="6" placeholder="6-digit code" inputmode="numeric"><button class="primary" id="join">Join</button></div>
 <div class="row"><button class="ghost" id="scanQr">📷 Scan QR</button></div><video id="cam" hidden playsinline style="width:100%;max-width:260px;border-radius:8px"></video></div></div>
 <div id="pstate" class="msg info"><span class="dot"></span>Not connected</div></div>
-<div class="card" id="xfer" hidden><h3>Transfer</h3>
-<div class="row"><input type="file" id="pfile"><button class="primary" id="psend" disabled>Send</button><button class="ghost" id="leave">Disconnect</button></div>
+<div class="card" id="xfer" hidden><h3>Transfer <small class="muted">· no size limit, files stream straight between browsers</small></h3>
+<label class="dropzone" id="dropzone"><input type="file" id="pfile" multiple hidden><span class="dzi">📁</span><b>Drop files here or click to choose</b><small id="pqueue" class="muted">No files selected</small></label>
+<div class="row"><button class="primary" id="psend" disabled>Send files</button><button class="ghost" id="leave">Disconnect</button></div>
+<small class="muted">Receiver in Chrome/Edge saves directly to disk (any size). Other browsers hold the file in memory, so keep files modest there.</small>
 <div id="pxfers"></div></div>
 </section>
 </main>
