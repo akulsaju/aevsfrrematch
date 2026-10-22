@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="310" viewBox="0 0 1200 310" role="img" aria-labelledby="title desc">
+  <title id="title">Trivectra privacy boundaries</title>
+  <desc id="desc">A comparison of data visible to each service: the audit service processes the submitted identifier, vault storage receives ciphertext but not the key, and P2P signaling handles room metadata but not file bytes.</desc>
+  <defs>
+    <linearGradient id="bg" x2="1" y2="1"><stop stop-color="#11172a"/><stop offset="1" stop-color="#192139"/></linearGradient>
+    <linearGradient id="audit" x2="1"><stop stop-color="#8b5cf6"/><stop offset="1" stop-color="#c4b5fd"/></linearGradient>
+    <linearGradient id="vault" x2="1"><stop stop-color="#0891b2"/><stop offset="1" stop-color="#67e8f9"/></linearGradient>
+    <linearGradient id="p2p" x2="1"><stop stop-color="#059669"/><stop offset="1" stop-color="#6ee7b7"/></linearGradient>
+    <style>text{font-family:Segoe UI,Arial,sans-serif;fill:#f5f7ff}.module{font-size:13px;font-weight:700;letter-spacing:2px}.item{font-size:18px;font-weight:700}.note{font-size:14px;fill:#c2c9df}.pill{font-size:12px;font-weight:700;letter-spacing:1px}</style>
+  </defs>
+  <rect width="1200" height="310" rx="22" fill="url(#bg)"/>
+  <text x="38" y="42" font-family="Segoe UI,Arial,sans-serif" font-size="13" font-weight="700" letter-spacing="2" fill="#b9c4e8">PRIVACY BOUNDARIES · WHAT EACH SERVICE CAN SEE</text>
+  <g>
+    <rect x="34" y="69" width="360" height="191" rx="18" fill="#8b5cf6" fill-opacity=".09" stroke="#a78bfa" stroke-opacity=".42"/>
+    <rect x="55" y="89" width="116" height="25" rx="12" fill="url(#audit)"/>
+    <text x="113" y="106" text-anchor="middle" class="pill">AUDIT</text>
+    <text x="58" y="151" class="item">Identifier is processed</text>
+    <text x="58" y="182" class="note">Sent to run public profile checks.</text>
+    <text x="58" y="205" class="note">Unknown means blocked or unreachable—</text>
+    <text x="58" y="227" class="note">not confirmed clean.</text>
+  </g>
+  <g>
+    <rect x="420" y="69" width="360" height="191" rx="18" fill="#0891b2" fill-opacity=".08" stroke="#67e8f9" stroke-opacity=".42"/>
+    <rect x="441" y="89" width="116" height="25" rx="12" fill="url(#vault)"/>
+    <text x="499" y="106" text-anchor="middle" class="pill">VAULT</text>
+    <text x="444" y="151" class="item">Ciphertext is stored</text>
+    <text x="444" y="182" class="note">Encryption key stays in the link</text>
+    <text x="444" y="205" class="note">fragment, outside the HTTP request.</text>
+    <text x="444" y="227" class="note">Keep the complete share link private.</text>
+  </g>
+  <g>
+    <rect x="806" y="69" width="360" height="191" rx="18" fill="#059669" fill-opacity=".08" stroke="#6ee7b7" stroke-opacity=".42"/>
+    <rect x="827" y="89" width="116" height="25" rx="12" fill="url(#p2p)"/>
+    <text x="885" y="106" text-anchor="middle" class="pill">P2P</text>
+    <text x="830" y="151" class="item">Signaling is coordinated</text>
+    <text x="830" y="182" class="note">Room setup passes through the server.</text>
+    <text x="830" y="205" class="note">File bytes use WebRTC; TURN can relay</text>
+    <text x="830" y="227" class="note">encrypted transport packets if needed.</text>
+  </g>
+  <text x="600" y="291" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="12" fill="#9eabc9">Privacy boundaries are not anonymity guarantees. Review the security notes before sharing sensitive data.</text>
+</svg>

@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="520" viewBox="0 0 1200 520" role="img" aria-labelledby="title desc">
+  <title id="title">Trivectra system architecture</title>
+  <desc id="desc">Three lanes show audit queries to public profile sources, encrypted vault ciphertext storage with the key remaining in the URL fragment, and direct WebRTC file transfer with signaling through the server.</desc>
+  <defs>
+    <linearGradient id="bg" x2="1" y2="1"><stop stop-color="#10172a"/><stop offset="1" stop-color="#17213a"/></linearGradient>
+    <linearGradient id="a" x2="1"><stop stop-color="#8b5cf6"/><stop offset="1" stop-color="#c4b5fd"/></linearGradient>
+    <linearGradient id="v" x2="1"><stop stop-color="#0891b2"/><stop offset="1" stop-color="#67e8f9"/></linearGradient>
+    <linearGradient id="p" x2="1"><stop stop-color="#059669"/><stop offset="1" stop-color="#6ee7b7"/></linearGradient>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 10 5 0 10Z" fill="#b9c4e8"/></marker>
+    <marker id="arrowA" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10Z" fill="#c4b5fd"/></marker>
+    <marker id="arrowV" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10Z" fill="#67e8f9"/></marker>
+    <marker id="arrowP" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10Z" fill="#6ee7b7"/></marker>
+    <style>
+      text{font-family:Segoe UI,Arial,sans-serif;fill:#f5f7ff}.small{font-size:15px;fill:#bac4df}.label{font-size:17px;font-weight:700}.lane{font-size:14px;font-weight:700;letter-spacing:2px}
+    </style>
+  </defs>
+  <rect width="1200" height="520" rx="26" fill="url(#bg)"/>
+  <path d="M30 174H1170M30 337H1170" stroke="#8996bd" stroke-opacity=".18"/>
+  <text x="50" y="52" font-size="13" font-weight="700" letter-spacing="3" fill="#a9b5d7">THREE MODULES · THREE CLEAR DATA PATHS</text>
+  <text x="1150" y="52" text-anchor="end" class="small">TRIVECTRA SYSTEM MAP</text>
+  <g>
+    <rect x="48" y="74" width="1104" height="82" rx="17" fill="#8b5cf6" fill-opacity=".09" stroke="#a78bfa" stroke-opacity=".25"/>
+    <text x="70" y="101" class="lane" fill="#c4b5fd">01 / AUDIT</text>
+    <rect x="76" y="112" width="190" height="32" rx="10" fill="url(#a)"/><text x="171" y="134" text-anchor="middle" class="label">Your identifier</text>
+    <path d="M276 128h110" fill="none" stroke="#c4b5fd" stroke-width="2" marker-end="url(#arrowA)"/>
+    <rect x="400" y="112" width="230" height="32" rx="10" fill="#28204c" stroke="#a78bfa" stroke-opacity=".6"/><text x="515" y="134" text-anchor="middle" class="label">Audit service</text>
+    <path d="M640 128h110" fill="none" stroke="#c4b5fd" stroke-width="2" marker-end="url(#arrowA)"/>
+    <rect x="764" y="112" width="315" height="32" rx="10" fill="#28204c" stroke="#a78bfa" stroke-opacity=".6"/><text x="921" y="134" text-anchor="middle" class="label">Public profile sources</text>
+    <text x="1100" y="134" class="small">results</text>
+  </g>
+  <g>
+    <rect x="48" y="185" width="1104" height="135" rx="17" fill="#0891b2" fill-opacity=".07" stroke="#67e8f9" stroke-opacity=".24"/>
+    <text x="70" y="212" class="lane" fill="#a5f3fc">02 / ENCRYPTED VAULT</text>
+    <rect x="76" y="242" width="190" height="40" rx="11" fill="url(#v)"/><text x="171" y="268" text-anchor="middle" class="label">File · sender</text>
+    <path d="M276 262h105" fill="none" stroke="#67e8f9" stroke-width="2" marker-end="url(#arrowV)"/>
+    <rect x="394" y="242" width="240" height="40" rx="11" fill="#123346" stroke="#67e8f9" stroke-opacity=".65"/><text x="514" y="268" text-anchor="middle" class="label">Encrypt in browser</text>
+    <path d="M644 262h88" fill="none" stroke="#67e8f9" stroke-width="2" marker-end="url(#arrowV)"/>
+    <rect x="745" y="242" width="190" height="40" rx="11" fill="#123346" stroke="#67e8f9" stroke-opacity=".65"/><text x="840" y="268" text-anchor="middle" class="label">Ciphertext</text>
+    <path d="M945 262h75" fill="none" stroke="#67e8f9" stroke-width="2" marker-end="url(#arrowV)"/>
+    <rect x="1033" y="242" width="92" height="40" rx="11" fill="#123346" stroke="#67e8f9" stroke-opacity=".65"/><text x="1079" y="268" text-anchor="middle" class="label">Vault</text>
+    <text x="400" y="304" class="small">Key travels separately in the URL fragment — never in the HTTP request.</text>
+  </g>
+  <g>
+    <rect x="48" y="349" width="1104" height="140" rx="17" fill="#059669" fill-opacity=".07" stroke="#6ee7b7" stroke-opacity=".24"/>
+    <text x="70" y="376" class="lane" fill="#a7f3d0">03 / PEER-TO-PEER</text>
+    <rect x="82" y="411" width="210" height="46" rx="12" fill="url(#p)"/><text x="187" y="439" text-anchor="middle" class="label">Sender browser</text>
+    <path d="M307 425H882" fill="none" stroke="#6ee7b7" stroke-width="3" marker-end="url(#arrowP)"/>
+    <text x="595" y="416" text-anchor="middle" class="small">File bytes · WebRTC data channel</text>
+    <rect x="900" y="411" width="210" height="46" rx="12" fill="url(#p)"/><text x="1005" y="439" text-anchor="middle" class="label">Receiver browser</text>
+    <rect x="478" y="461" width="240" height="22" rx="9" fill="#183940" stroke="#6ee7b7" stroke-opacity=".45"/>
+    <text x="598" y="477" text-anchor="middle" font-size="12" fill="#b8f5df">Server handles room + signaling only</text>
+    <path d="M260 408C350 372 840 372 928 408" fill="none" stroke="#b9c4e8" stroke-width="1.5" stroke-dasharray="6 7" marker-end="url(#arrow)"/>
+  </g>
+</svg>

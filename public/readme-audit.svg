@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="260" viewBox="0 0 1200 260" role="img" aria-labelledby="title desc">
+  <title id="title">Footprint audit flow</title>
+  <desc id="desc">The audit takes a username, checks 1,843 public profile sources in parallel shards, then reports confirmed hits, unknown sources, a privacy score, and removal actions.</desc>
+  <defs>
+    <linearGradient id="bg" x2="1" y2="1"><stop stop-color="#11172a"/><stop offset="1" stop-color="#21163b"/></linearGradient>
+    <linearGradient id="accent" x2="1"><stop stop-color="#8b5cf6"/><stop offset="1" stop-color="#c4b5fd"/></linearGradient>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10Z" fill="#c4b5fd"/></marker>
+    <style>text{font-family:Segoe UI,Arial,sans-serif;fill:#f5f7ff}.sub{font-size:15px;fill:#c2c9df}.head{font-size:19px;font-weight:700}</style>
+  </defs>
+  <rect width="1200" height="260" rx="22" fill="url(#bg)"/>
+  <text x="38" y="42" font-family="Segoe UI,Arial,sans-serif" font-size="13" font-weight="700" letter-spacing="2" fill="#c4b5fd">FOOTPRINT AUDIT · FROM QUERY TO ACTION</text>
+  <g>
+    <rect x="38" y="79" width="205" height="128" rx="16" fill="#28204c" stroke="#a78bfa" stroke-opacity=".7"/>
+    <circle cx="68" cy="108" r="16" fill="url(#accent)"/><text x="68" y="114" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="700" fill="#fff">1</text>
+    <text x="62" y="151" class="head">Enter handle</text><text x="62" y="178" class="sub">Username you own</text>
+    <path d="M253 143h48" stroke="#c4b5fd" stroke-width="2" marker-end="url(#arr)"/>
+    <rect x="313" y="79" width="280" height="128" rx="16" fill="#28204c" stroke="#a78bfa" stroke-opacity=".7"/>
+    <circle cx="343" cy="108" r="16" fill="url(#accent)"/><text x="343" y="114" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="700" fill="#fff">2</text>
+    <text x="337" y="151" class="head">Check 1,843 sources</text><text x="337" y="178" class="sub">8 parallel request shards</text>
+    <path d="M603 143h48" stroke="#c4b5fd" stroke-width="2" marker-end="url(#arr)"/>
+    <rect x="663" y="79" width="225" height="128" rx="16" fill="#28204c" stroke="#a78bfa" stroke-opacity=".7"/>
+    <circle cx="693" cy="108" r="16" fill="url(#accent)"/><text x="693" y="114" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="700" fill="#fff">3</text>
+    <text x="687" y="151" class="head">Review evidence</text><text x="687" y="178" class="sub">Hits · unknowns · details</text>
+    <path d="M898 143h48" stroke="#c4b5fd" stroke-width="2" marker-end="url(#arr)"/>
+    <rect x="958" y="79" width="204" height="128" rx="16" fill="#28204c" stroke="#a78bfa" stroke-opacity=".7"/>
+    <circle cx="988" cy="108" r="16" fill="url(#accent)"/><text x="988" y="114" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="700" fill="#fff">4</text>
+    <text x="982" y="151" class="head">Take action</text><text x="982" y="178" class="sub">Score · removal plan</text>
+  </g>
+  <text x="600" y="238" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="13" fill="#aab5d2">Blocked or unreachable sources are shown as unknown—not counted as clean.</text>
+</svg>

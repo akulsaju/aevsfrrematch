@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="300" viewBox="0 0 1200 300" role="img" aria-labelledby="title desc">
+  <title id="title">Zero-knowledge vault flow</title>
+  <desc id="desc">The sender's browser encrypts a file with AES-256-GCM. Only ciphertext is uploaded. The key remains in the link fragment and is used by the recipient browser to decrypt the download.</desc>
+  <defs>
+    <linearGradient id="bg" x2="1" y2="1"><stop stop-color="#0e1a2d"/><stop offset="1" stop-color="#102e3b"/></linearGradient>
+    <linearGradient id="cyan" x2="1"><stop stop-color="#0891b2"/><stop offset="1" stop-color="#67e8f9"/></linearGradient>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10Z" fill="#67e8f9"/></marker>
+    <style>text{font-family:Segoe UI,Arial,sans-serif;fill:#f5f7ff}.sub{font-size:14px;fill:#bdccdc}.head{font-size:18px;font-weight:700}.mono{font-family:Consolas,monospace;font-size:13px;fill:#a5f3fc}</style>
+  </defs>
+  <rect width="1200" height="300" rx="22" fill="url(#bg)"/>
+  <text x="38" y="42" font-family="Segoe UI,Arial,sans-serif" font-size="13" font-weight="700" letter-spacing="2" fill="#a5f3fc">ENCRYPTED VAULT · PLAINTEXT STAYS IN YOUR BROWSER</text>
+  <rect x="30" y="64" width="540" height="193" rx="18" fill="#0891b2" fill-opacity=".07" stroke="#67e8f9" stroke-opacity=".45" stroke-dasharray="7 6"/>
+  <text x="50" y="90" font-family="Segoe UI,Arial,sans-serif" font-size="12" font-weight="700" letter-spacing="2" fill="#67e8f9">SENDER BROWSER</text>
+  <rect x="55" y="123" width="130" height="66" rx="12" fill="#124058" stroke="#67e8f9" stroke-opacity=".5"/>
+  <text x="120" y="151" text-anchor="middle" class="head">Your file</text><text x="120" y="173" text-anchor="middle" class="sub">plaintext</text>
+  <path d="M192 156h48" stroke="#67e8f9" stroke-width="2" marker-end="url(#arr)"/>
+  <rect x="251" y="112" width="260" height="88" rx="14" fill="#102c40" stroke="#67e8f9" stroke-width="1.5"/>
+  <path d="M276 151v-10a15 15 0 0 1 30 0v10m-35 0h40v28h-40z" fill="none" stroke="#a5f3fc" stroke-width="3"/>
+  <text x="372" y="150" class="head">AES-256-GCM</text><text x="372" y="176" class="sub">encrypt before upload</text>
+  <path d="M517 156h78" stroke="#67e8f9" stroke-width="2" marker-end="url(#arr)"/>
+  <rect x="606" y="123" width="155" height="66" rx="12" fill="#123346" stroke="#67e8f9" stroke-opacity=".7"/>
+  <text x="684" y="151" text-anchor="middle" class="head">Ciphertext</text><text x="684" y="173" text-anchor="middle" class="sub">uploaded data</text>
+  <path d="M768 156h57" stroke="#67e8f9" stroke-width="2" marker-end="url(#arr)"/>
+  <rect x="836" y="123" width="142" height="66" rx="12" fill="#123346" stroke="#67e8f9" stroke-opacity=".7"/>
+  <text x="907" y="151" text-anchor="middle" class="head">Storage</text><text x="907" y="173" text-anchor="middle" class="sub">no key stored</text>
+  <path d="M985 156h43" stroke="#67e8f9" stroke-width="2" marker-end="url(#arr)"/>
+  <rect x="1037" y="123" width="132" height="66" rx="12" fill="url(#cyan)"/>
+  <text x="1103" y="151" text-anchor="middle" class="head">Recipient</text><text x="1103" y="173" text-anchor="middle" class="sub">decrypts locally</text>
+  <path d="M381 214V238H1104V201" fill="none" stroke="#a78bfa" stroke-width="2" stroke-dasharray="6 5" marker-end="url(#arr)"/>
+  <rect x="558" y="222" width="330" height="30" rx="12" fill="#28204c" stroke="#a78bfa" stroke-opacity=".7"/>
+  <text x="723" y="242" text-anchor="middle" class="mono">Share key separately: URL fragment #key=…</text>
+  <text x="600" y="282" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="12" fill="#aab5d2">The browser never includes the fragment in the HTTP request.</text>
+</svg>

@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="320" viewBox="0 0 1200 320" role="img" aria-labelledby="title desc">
+  <title id="title">Peer-to-peer transfer flow</title>
+  <desc id="desc">The sender and receiver exchange room setup and WebRTC signaling through the coordination server, then send the file directly over a browser-to-browser data channel.</desc>
+  <defs>
+    <linearGradient id="bg" x2="1" y2="1"><stop stop-color="#101a2b"/><stop offset="1" stop-color="#102b2c"/></linearGradient>
+    <linearGradient id="green" x2="1"><stop stop-color="#059669"/><stop offset="1" stop-color="#6ee7b7"/></linearGradient>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10Z" fill="#6ee7b7"/></marker>
+    <marker id="arrSoft" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10Z" fill="#aab8d6"/></marker>
+    <style>text{font-family:Segoe UI,Arial,sans-serif;fill:#f5f7ff}.sub{font-size:14px;fill:#bdccdc}.head{font-size:19px;font-weight:700}</style>
+  </defs>
+  <rect width="1200" height="320" rx="22" fill="url(#bg)"/>
+  <text x="38" y="42" font-family="Segoe UI,Arial,sans-serif" font-size="13" font-weight="700" letter-spacing="2" fill="#a7f3d0">P2P TRANSFER · SIGNALING IS NOT THE FILE</text>
+  <rect x="70" y="100" width="245" height="112" rx="18" fill="url(#green)"/>
+  <text x="192" y="145" text-anchor="middle" class="head">Sender browser</text><text x="192" y="176" text-anchor="middle" class="sub">selects and sends files</text>
+  <rect x="478" y="108" width="244" height="96" rx="18" fill="#1b2940" stroke="#aab8d6" stroke-opacity=".6"/>
+  <text x="600" y="147" text-anchor="middle" class="head">Room + signaling</text><text x="600" y="177" text-anchor="middle" class="sub">server coordinates peers</text>
+  <rect x="885" y="100" width="245" height="112" rx="18" fill="url(#green)"/>
+  <text x="1007" y="145" text-anchor="middle" class="head">Receiver browser</text><text x="1007" y="176" text-anchor="middle" class="sub">accepts and saves files</text>
+  <path d="M320 125H462" stroke="#aab8d6" stroke-width="2" stroke-dasharray="7 6" marker-end="url(#arrSoft)"/>
+  <path d="M742 125H869" stroke="#aab8d6" stroke-width="2" stroke-dasharray="7 6" marker-end="url(#arrSoft)"/>
+  <text x="391" y="111" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="12" fill="#bac4df">SDP / ICE</text>
+  <text x="806" y="111" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="12" fill="#bac4df">SDP / ICE</text>
+  <path d="M315 196C450 275 750 275 885 196" fill="none" stroke="#6ee7b7" stroke-width="4" marker-end="url(#arr)"/>
+  <rect x="442" y="239" width="318" height="38" rx="18" fill="#123b35" stroke="#6ee7b7" stroke-opacity=".7"/>
+  <text x="601" y="264" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="700" fill="#b9ffe2">File bytes · direct WebRTC channel</text>
+  <text x="600" y="303" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="12" fill="#aab5d2">A TURN relay may carry encrypted transport packets when a direct route is unavailable.</text>
+</svg>
