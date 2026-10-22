@@ -1,0 +1,1713 @@
+[
+ {
+  "name": "35photo",
+  "url": "https://35photo.pro/@{}/",
+  "home": "https://35photo.pro/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 302,
+  "es": "userNameBlock"
+ },
+ {
+  "name": "3dtoday",
+  "url": "https://3dtoday.ru/blogs/{}",
+  "home": "https://3dtoday.ru/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 302,
+  "es": "class=\"header_user_name"
+ },
+ {
+  "name": "7dach",
+  "url": "https://7dach.ru/profile/{}",
+  "home": "https://7dach.ru/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "Информация / Профиль",
+  "ms": "<title>Ошибка / 7dach.ru"
+ },
+ {
+  "name": "ACF",
+  "url": "https://support.advancedcustomfields.com/forums/users/{}/",
+  "home": "https://support.advancedcustomfields.com/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "bbp-user-body",
+  "ms": "<title>Page Not Found - ACF Support</title>"
+ },
+ {
+  "name": "alik",
+  "url": "https://www.alik.cz/u/{}",
+  "home": "https://www.alik.cz/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "Vizitka – Alík.cz</title>",
+  "ms": "<title>Vizitka nenalezena"
+ },
+ {
+  "name": "Alura",
+  "url": "https://cursos.alura.com.br/user/{}",
+  "home": "https://cursos.alura.com.br/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "Perfil de",
+  "ms": "\"error\":\"Not Found\""
+ },
+ {
+  "name": "AmericanThinker",
+  "url": "https://www.americanthinker.com/author/{}/",
+  "home": "https://www.americanthinker.com/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "class=\"author_image\"",
+  "ms": "title>404 Not Found</title>"
+ },
+ {
+  "name": "Arsmate",
+  "url": "https://arsmate.com/api/creators/{}",
+  "home": "https://arsmate.com/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "\"success\":true",
+  "ms": "404,\"Server Error"
+ },
+ {
+  "name": "Artbreeder",
+  "url": "https://www.artbreeder.com/{}",
+  "home": "https://www.artbreeder.com/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "data-tutorial=\"profile-filter\"",
+  "ms": "error: {message:\"User not found\""
+ },
+ {
+  "name": "ArtStation",
+  "url": "https://www.artstation.com/api/v2/user_profiles/{}.json",
+  "home": "https://www.artstation.com/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "\"id\":",
+  "ms": "\"message\":\"User with username:"
+ },
+ {
+  "name": "Bandlab",
+  "url": "https://www.bandlab.com/api/v1.3/users/{}",
+  "home": "https://www.bandlab.com/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "\"username\":",
+  "ms": "Couldn’t find any matching element, it might be deleted"
+ },
+ {
+  "name": "Bimpos",
+  "url": "https://ask.bimpos.com/user/{}",
+  "home": "https://ask.bimpos.com/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "<title>User ",
+  "ms": "Page not found"
+ },
+ {
+  "name": "Bio Site",
+  "url": "https://bio.site/{}",
+  "home": "https://bio.site/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "— Bio Sites</title>",
+  "ms": "This Bio Site doesn’t exist — Bio Site</title>"
+ },
+ {
+  "name": "Boosty",
+  "url": "https://api.boosty.to/v1/blog/{}",
+  "home": "https://api.boosty.to/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "\"id\":",
+  "ms": "\"error\":\"blog_not_found\""
+ },
+ {
+  "name": "Bunpro",
+  "url": "https://community.bunpro.jp/u/{}.json",
+  "home": "https://community.bunpro.jp/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "username",
+  "ms": "The requested URL or resource could not be found."
+ },
+ {
+  "name": "Calendy",
+  "url": "https://calendly.com/api/booking/profiles/{}",
+  "home": "https://calendly.com/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "\"id\":",
+  "ms": "\"message\":\"not found\""
+ },
+ {
+  "name": "Carbonmade",
+  "url": "https://{}.carbonmade.com/",
+  "home": "https://x.carbonmade.com/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "<meta name=\"description\" content=\"",
+  "ms": ".carbonmade.com not found"
+ },
+ {
+  "name": "Career.habr",
+  "url": "https://career.habr.com/{}",
+  "home": "https://career.habr.com/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "— Хабр Карьера</title>",
+  "ms": "Ошибка 404"
+ },
+ {
+  "name": "Chocolatey",
+  "url": "https://community.chocolatey.org/profiles/{}",
+  "home": "https://community.chocolatey.org/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "id =\"bioSection\"",
+  "ms": "id=\"error404Message\""
+ },
+ {
+  "name": "Choko.Link",
+  "url": "https://choko.link/{}",
+  "home": "https://choko.link/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "--title-font-family: Roboto;",
+  "ms": "The link might be incorrect or the profile has been deleted."
+ },
+ {
+  "name": "Coda",
+  "url": "https://coda.io/@{}/",
+  "home": "https://coda.io/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "- Coda Profile</title>",
+  "ms": "<title>Coda | Page not found - Coda</title>"
+ },
+ {
+  "name": "codementor",
+  "url": "https://www.codementor.io/@{}",
+  "home": "https://www.codementor.io/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "ABOUT ME",
+  "ms": "404/favicon.png"
+ },
+ {
+  "name": "Commudle",
+  "url": "https://json.commudle.com/api/v2/users?username={}",
+  "home": "https://json.commudle.com/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "\"status\":200",
+  "ms": "\"status\":404"
+ },
+ {
+  "name": "Coub",
+  "url": "https://coub.com/api/v2/channels/{}",
+  "home": "https://coub.com/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "\"user_id\":",
+  "ms": "\"error\":\"Unhandled exception\""
+ },
+ {
+  "name": "Cropty",
+  "url": "https://api.cropty.io/v1/auth/{}",
+  "home": "https://api.cropty.io/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "\"name\":",
+  "ms": "\"errors\":"
+ },
+ {
+  "name": "Cytoid",
+  "url": "https://cytoid.io/profile/{}",
+  "home": "https://cytoid.io/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "Joined",
+  "ms": "Profile not found"
+ },
+ {
+  "name": "Daily Kos",
+  "url": "https://www.dailykos.com/user/{}",
+  "home": "https://www.dailykos.com/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "\"@type\":\"ProfilePage\"",
+  "ms": "Page not found! (404)"
+ },
+ {
+  "name": "Dailymotion",
+  "url": "https://api.dailymotion.com/user/{}?fields=id,username,screenname,description,avatar_720_url,cover_250_url,followers_total,following_total,videos_total,country,created_time,verified,url",
+  "home": "https://api.dailymotion.com/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "\"id\":",
+  "ms": "\"code\":404"
+ },
+ {
+  "name": "dateinasia",
+  "url": "https://www.dateinasia.com/{}",
+  "home": "https://www.dateinasia.com/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "About me",
+  "ms": "The page you are looking for does not exist"
+ },
+ {
+  "name": "Designspriation",
+  "url": "https://www.designspiration.com/{}/",
+  "home": "https://www.designspiration.com/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "has discovered on Designspiration",
+  "ms": "Content Not Found"
+ },
+ {
+  "name": "destream",
+  "url": "https://api.destream.net/siteapi/v2/live/details/{}",
+  "home": "https://api.destream.net/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "\"userName\":"
+ },
+ {
+  "name": "Diablo",
+  "url": "https://diablo2.io/member/{}/",
+  "home": "https://diablo2.io/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "Viewing profile - ",
+  "ms": "The requested user does not exist"
+ },
+ {
+  "name": "DIBIZ",
+  "url": "https://www.dibiz.com/{}",
+  "home": "https://www.dibiz.com/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "Add to contacts</span>",
+  "ms": "An Error Has Occurred"
+ },
+ {
+  "name": "Discogs",
+  "url": "https://api.discogs.com/users/{}",
+  "home": "https://api.discogs.com/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "\"id\":",
+  "ms": "\"message\": \"User does not exist or may have been deleted.\""
+ },
+ {
+  "name": "Discord (Invite)",
+  "url": "https://discord.com/api/v9/invites/{}?with_counts=true&with_expiration=true",
+  "home": "https://discord.com/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "\"channel\":",
+  "ms": "\"message\": \"Unknown Invite\""
+ },
+ {
+  "name": "Discourse",
+  "url": "https://meta.discourse.org/u/{}/summary.json",
+  "home": "https://meta.discourse.org/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "topics",
+  "ms": "The requested URL or resource could not be found."
+ },
+ {
+  "name": "Dojoverse",
+  "url": "https://dojoverse.com/members/{}/",
+  "home": "https://dojoverse.com/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "Joined",
+  "ms": "Looks like you got lost!."
+ },
+ {
+  "name": "Donatello",
+  "url": "https://donatello.to/{}",
+  "home": "https://donatello.to/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "UserPage.init",
+  "ms": "<title>Сторінку не знайдено (404) - Donatello</title>"
+ },
+ {
+  "name": "Donatik",
+  "url": "https://{}.donatik.ua/",
+  "home": "https://x.donatik.ua/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 500,
+  "es": "\\\"__typename\\\":\\\"UserPageOutput\\\"",
+  "ms": "id=\"__next_error__\""
+ },
+ {
+  "name": "Donation Alerts",
+  "url": "https://www.donationalerts.com/api/v1/user/{}/donationpagesettings",
+  "home": "https://www.donationalerts.com/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 202,
+  "es": "\"data\":",
+  "ms": "\"success\":false"
+ },
+ {
+  "name": "DonationPay",
+  "url": "https://give.donationpay.org/hopewell-fund/{}/",
+  "home": "https://give.donationpay.org/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "id=\"dp-payment-form\"",
+  "ms": "<title>404 Not Found</title>"
+ },
+ {
+  "name": "DOU",
+  "url": "https://dou.ua/users/{}/",
+  "home": "https://dou.ua/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "class=\"page-profile\"",
+  "ms": "class=\"page-error\""
+ },
+ {
+  "name": "Dribbble",
+  "url": "https://dribbble.com/{}",
+  "home": "https://dribbble.com/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": " | Dribbble",
+  "ms": "(404)</title>"
+ },
+ {
+  "name": "ebay_stores",
+  "url": "https://www.ebay.com/str/{}",
+  "home": "https://www.ebay.com/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 410,
+  "es": "| eBay Stores</title>",
+  "ms": "Sorry, this store was not found."
+ },
+ {
+  "name": "Expressional.social (Mastodon Instance)",
+  "url": "https://expressional.social/api/v1/accounts/lookup?acct={}",
+  "home": "https://expressional.social/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "display_name",
+  "ms": "Record not found"
+ },
+ {
+  "name": "Filmweb",
+  "url": "https://www.filmweb.pl/api/v1/users/{}/id",
+  "home": "https://www.filmweb.pl/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 204,
+  "es": "\"userId\":"
+ },
+ {
+  "name": "fine_art_america",
+  "url": "https://fineartamerica.com/profiles/{}",
+  "home": "https://fineartamerica.com/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 301,
+  "es": "Shop for artwork by",
+  "ms": "Browse through millions of independent artists in our extensive"
+ },
+ {
+  "name": "flowcode",
+  "url": "https://www.flow.page/{}",
+  "home": "https://www.flow.page/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "\"page\":{",
+  "ms": "\"page\":null"
+ },
+ {
+  "name": "Freelance.ua",
+  "url": "https://freelance.ua/user/{}/",
+  "home": "https://freelance.ua/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "p-profile-avatar",
+  "ms": "Схоже, дана сторінка не знайдена"
+ },
+ {
+  "name": "Gab",
+  "url": "https://gab.com/api/v1/account_by_username/{}",
+  "home": "https://gab.com/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "\"id\":",
+  "ms": "\"error\":\"Record not found\""
+ },
+ {
+  "name": "GDBrowser",
+  "url": "https://gdbrowser.com/api/profile/{}",
+  "home": "https://gdbrowser.com/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 500,
+  "es": "\"accountID\":",
+  "ms": "-1"
+ },
+ {
+  "name": "GeeksForGeeks",
+  "url": "https://authapi.geeksforgeeks.org/api-get/user-profile-info/?handle={}",
+  "home": "https://authapi.geeksforgeeks.org/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 400,
+  "es": "\"message\":\"data retrieved successfully\"",
+  "ms": "\"message\":\"User not found!\""
+ },
+ {
+  "name": "Gettr",
+  "url": "https://gettr.com/api/s/uinf/{}",
+  "home": "https://gettr.com/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 400,
+  "es": "\"rc\":\"OK\"",
+  "ms": "\"rc\":\"ERR\""
+ },
+ {
+  "name": "GNOME (Shell Extensions)",
+  "url": "https://extensions.gnome.org/accounts/profile/{}",
+  "home": "https://extensions.gnome.org/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "class=\"user-details\"",
+  "ms": "<h3>404 - Page not Found</h3>"
+ },
+ {
+  "name": "gpodder.net",
+  "url": "https://gpodder.net/user/{}/",
+  "home": "https://gpodder.net/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "mdash; gpodder.net",
+  "ms": "404 - Not found"
+ },
+ {
+  "name": "Graphics.social (Mastodon Instance)",
+  "url": "https://graphics.social/api/v1/accounts/lookup?acct={}",
+  "home": "https://graphics.social/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "display_name",
+  "ms": "Record not found"
+ },
+ {
+  "name": "Gravatar",
+  "url": "https://en.gravatar.com/{}.json",
+  "home": "https://en.gravatar.com/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "{\"entry\":",
+  "ms": "\"User not found\""
+ },
+ {
+  "name": "GTAinside.com",
+  "url": "https://www.gtainside.com/profile/{}",
+  "home": "https://www.gtainside.com/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "class=\"user-profile-name\"",
+  "ms": "<title>Page not found - 404</title>"
+ },
+ {
+  "name": "gumroad",
+  "url": "https://{}.gumroad.com/",
+  "home": "https://x.gumroad.com/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "s profile picture",
+  "ms": "Page not found"
+ },
+ {
+  "name": "Habbo.com.br",
+  "url": "https://www.habbo.com.br/api/public/users?name={}",
+  "home": "https://www.habbo.com.br/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "uniqueId\":",
+  "ms": "error\": \"not-found"
+ },
+ {
+  "name": "Habbo.com.tr",
+  "url": "https://www.habbo.com.tr/api/public/users?name={}",
+  "home": "https://www.habbo.com.tr/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "uniqueId\":",
+  "ms": "error\": \"not-found"
+ },
+ {
+  "name": "Habbo.de",
+  "url": "https://www.habbo.de/api/public/users?name={}",
+  "home": "https://www.habbo.de/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "uniqueId\":",
+  "ms": "error\": \"not-found"
+ },
+ {
+  "name": "Habbo.es",
+  "url": "https://www.habbo.es/api/public/users?name={}",
+  "home": "https://www.habbo.es/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "uniqueId\":",
+  "ms": "not-found"
+ },
+ {
+  "name": "Habbo.fi",
+  "url": "https://www.habbo.fi/api/public/users?name={}",
+  "home": "https://www.habbo.fi/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "uniqueId\":",
+  "ms": "error\": \"not-found"
+ },
+ {
+  "name": "Habbo.fr",
+  "url": "https://www.habbo.fr/api/public/users?name={}",
+  "home": "https://www.habbo.fr/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "uniqueId\":",
+  "ms": "error\": \"not-found"
+ },
+ {
+  "name": "Habbo.it",
+  "url": "https://www.habbo.it/api/public/users?name={}",
+  "home": "https://www.habbo.it/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "uniqueId\":",
+  "ms": "error\": \"not-found"
+ },
+ {
+  "name": "Habr (Q&A)",
+  "url": "https://qna.habr.com/user/{}",
+  "home": "https://qna.habr.com/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "class=\"page-header__info\"",
+  "ms": "icon_error_404"
+ },
+ {
+  "name": "Habtium",
+  "url": "https://habtium.es/{}",
+  "home": "https://habtium.es/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "<div class=\"profile-info",
+  "ms": "<h1 class=\"section red\">Oops!"
+ },
+ {
+  "name": "HackAdvisor",
+  "url": "https://hackadvisor.io/api/v2/profile/{}/",
+  "home": "https://hackadvisor.io/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "\"username\":",
+  "ms": "{\"detail\":\"Username not found\"}"
+ },
+ {
+  "name": "HiHello",
+  "url": "https://www.hihello.com/author/{}",
+  "home": "https://www.hihello.com/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "\"mainEntity\": {",
+  "ms": "class=\"utility-page-wrap-404\""
+ },
+ {
+  "name": "Hometech.social (Mastodon Instance)",
+  "url": "https://hometech.social/api/v1/accounts/lookup?acct={}",
+  "home": "https://hometech.social/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "display_name",
+  "ms": "Record not found"
+ },
+ {
+  "name": "icq-chat",
+  "url": "https://icq.icqchat.co/members/{}/",
+  "home": "https://icq.icqchat.co/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "class=\"memberHeader-mainContent",
+  "ms": "<title>Oops! We ran into some problems."
+ },
+ {
+  "name": "Imgur",
+  "url": "https://api.imgur.com/account/v1/accounts/{}?client_id=546c25a59c58ad7",
+  "home": "https://api.imgur.com/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "\"username\":",
+  "ms": "\"code\":\"404\""
+ },
+ {
+  "name": "inaturalist",
+  "url": "https://api.inaturalist.org/v1/users/{}",
+  "home": "https://api.inaturalist.org/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "\"results\":[{",
+  "ms": "\"status\":404"
+ },
+ {
+  "name": "InkBunny",
+  "url": "https://inkbunny.net/{}",
+  "home": "https://inkbunny.net/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 302,
+  "es": "Profile | Inkbunny, the Furry Art Community</title>",
+  "ms": "<title>Members | Inkbunny, the Furry Art Community</title>"
+ },
+ {
+  "name": "Intigriti",
+  "url": "https://app.intigriti.com/api/user/public/profile/{}",
+  "home": "https://app.intigriti.com/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "\"userName\":",
+  "ms": "class=\"error-page-container\""
+ },
+ {
+  "name": "itch.io",
+  "url": "https://itch.io/profile/{}",
+  "home": "https://itch.io/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "class=\"user_data\"",
+  "ms": "class=\"not_found_page page_widget base_widget\""
+ },
+ {
+  "name": "komi",
+  "url": "https://api.komi.io/api/talent/usernames/{}",
+  "home": "https://api.komi.io/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "accountStatus\":\"active",
+  "ms": "The talent profile was not found"
+ },
+ {
+  "name": "kwejk.pl",
+  "url": "https://kwejk.pl/uzytkownik/{}#/tablica/",
+  "home": "https://kwejk.pl/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "Kwejki użytkownika",
+  "ms": "404 - strona nie została znaleziona - KWEJK.pl"
+ },
+ {
+  "name": "LevelBlue",
+  "url": "https://otx.alienvault.com/otxapi/auth/validate?username={}",
+  "home": "https://otx.alienvault.com/",
+  "type": "wmn",
+  "ec": 400,
+  "mc": 200,
+  "es": "\"username\": [\"This username is already taken\"]",
+  "ms": "{}"
+ },
+ {
+  "name": "Libretooth.gr (Mastodon Instance)",
+  "url": "https://libretooth.gr/api/v1/accounts/lookup?acct={}",
+  "home": "https://libretooth.gr/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "display_name",
+  "ms": "Record not found"
+ },
+ {
+  "name": "LINE",
+  "url": "https://line.me/R/ti/p/@{}?from=page",
+  "home": "https://line.me/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "Add LINE friend",
+  "ms": "404 Not Found"
+ },
+ {
+  "name": "Magnific",
+  "url": "https://www.magnific.com/app/api/community/creator-info-by-name?creator_name={}&lang=en_US",
+  "home": "https://www.magnific.com/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "\"creator\":",
+  "ms": "\"message\":\"Creator not found\""
+ },
+ {
+  "name": "Malpedia Actors",
+  "url": "https://malpedia.caad.fkie.fraunhofer.de/actor/{}",
+  "home": "https://malpedia.caad.fkie.fraunhofer.de/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "href=\"/actors\"",
+  "ms": "Page not Found."
+ },
+ {
+  "name": "Mapstodon.space (Mastodon Instance)",
+  "url": "https://mapstodon.space/api/v1/accounts/lookup?acct={}",
+  "home": "https://mapstodon.space/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "display_name",
+  "ms": "Record not found"
+ },
+ {
+  "name": "masto.ai",
+  "url": "https://masto.ai/api/v1/accounts/lookup?acct={}",
+  "home": "https://masto.ai/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "\"id\":",
+  "ms": "\"error\":\"Record not found\""
+ },
+ {
+  "name": "Masto.nyc (Mastodon Instance)",
+  "url": "https://masto.nyc/api/v1/accounts/lookup?acct={}",
+  "home": "https://masto.nyc/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "display_name",
+  "ms": "Record not found"
+ },
+ {
+  "name": "Mastodon-101010.pl",
+  "url": "https://101010.pl/@{}",
+  "home": "https://101010.pl/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "@101010.pl",
+  "ms": "The page you are looking for isn&#39;t here."
+ },
+ {
+  "name": "Mastodon-C.IM",
+  "url": "https://c.im/@{}",
+  "home": "https://c.im/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "@c.im) - C.IM</title>",
+  "ms": "<title>The page you are looking for isn&#39;t here"
+ },
+ {
+  "name": "Mastodon-Defcon",
+  "url": "https://defcon.social/@{}",
+  "home": "https://defcon.social/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "- DEF CON Social</title>",
+  "ms": "The page you are looking for isn&#39;t here."
+ },
+ {
+  "name": "Mastodon-rigcz.club",
+  "url": "https://rigcz.club/@{}",
+  "home": "https://rigcz.club/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "@rigcz.club",
+  "ms": "The page you are looking for isn't here."
+ },
+ {
+  "name": "Mastodon-Toot.Community",
+  "url": "https://toot.community/@{}",
+  "home": "https://toot.community/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "@toot.community) - toot.community</title>",
+  "ms": "The page you are looking for isn&#39;t here."
+ },
+ {
+  "name": "metacritic",
+  "url": "https://www.metacritic.com/user/{}/",
+  "home": "https://www.metacritic.com/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "data-testid=\"profile-name\">",
+  "ms": "re looking for. Sorry about that.</p>"
+ },
+ {
+  "name": "Microsoft Learn",
+  "url": "https://learn.microsoft.com/api/profiles/{}",
+  "home": "https://learn.microsoft.com/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "\"userId\":"
+ },
+ {
+  "name": "mintme",
+  "url": "https://www.mintme.com/token/{}",
+  "home": "https://www.mintme.com/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "token | mintMe",
+  "ms": "Page not found"
+ },
+ {
+  "name": "Mixcloud",
+  "url": "https://api.mixcloud.com/{}/",
+  "home": "https://api.mixcloud.com/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "\"username\":",
+  "ms": "\"error\":"
+ },
+ {
+  "name": "Mixlr",
+  "url": "https://api.mixlr.com/users/{}",
+  "home": "https://api.mixlr.com/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "\"id\":",
+  "ms": "\"error\":\"Resource not found\""
+ },
+ {
+  "name": "Monkeytype",
+  "url": "https://api.monkeytype.com/users/{}/profile",
+  "home": "https://api.monkeytype.com/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "\"message\":\"Profile retrieved\"",
+  "ms": "\"message\":\"User not found\""
+ },
+ {
+  "name": "mssg.me",
+  "url": "https://{}.mssg.me/",
+  "home": "https://x.mssg.me/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "property=\"og:title\"",
+  "ms": "id=\"page_404\""
+ },
+ {
+  "name": "MUYZORRAS",
+  "url": "https://www.muyzorras.com/usuarios/{}",
+  "home": "https://www.muyzorras.com/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "og:title",
+  "ms": "<title>Error 404"
+ },
+ {
+  "name": "MyLot",
+  "url": "https://www.mylot.com/{}",
+  "home": "https://www.mylot.com/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "on myLot</title>",
+  "ms": " / Whoops!"
+ },
+ {
+  "name": "MYM",
+  "url": "https://mym.fans/{}",
+  "home": "https://mym.fans/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "class=\"page profile\"",
+  "ms": "class=\"page page-404\""
+ },
+ {
+  "name": "Neocities",
+  "url": "https://neocities.org/site/{}",
+  "home": "https://neocities.org/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "noindex, follow",
+  "ms": "- Not Found</title>"
+ },
+ {
+  "name": "Nightbot",
+  "url": "https://api.nightbot.tv/1/channels/t/{}",
+  "home": "https://api.nightbot.tv/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "\"status\":200",
+  "ms": "\"status\":404"
+ },
+ {
+  "name": "Nih Buat Jajan",
+  "url": "https://www.nihbuatjajan.com/manifest/{}.json",
+  "home": "https://www.nihbuatjajan.com/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "\"name\":",
+  "ms": "\"error\":\"Creator not found\""
+ },
+ {
+  "name": "Nitecrew (Mastodon Instance)",
+  "url": "https://nitecrew.rip/api/v1/accounts/lookup?acct={}",
+  "home": "https://nitecrew.rip/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "display_name",
+  "ms": "Record not found"
+ },
+ {
+  "name": "oglaszamy24h.pl",
+  "url": "https://oglaszamy24h.pl/profil,{}",
+  "home": "https://oglaszamy24h.pl/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "Profil użytkownika:",
+  "ms": "Nieprawidłowy link, w bazie danych nie istnieje użytkownik o podanym loginie"
+ },
+ {
+  "name": "ok.ru",
+  "url": "https://ok.ru/{}",
+  "home": "https://ok.ru/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "| OK",
+  "ms": "class=\"p404_t"
+ },
+ {
+  "name": "Origins.Habbo.com",
+  "url": "https://origins.habbo.com/api/public/users?name={}",
+  "home": "https://origins.habbo.com/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "uniqueId",
+  "ms": "not-found"
+ },
+ {
+  "name": "Origins.Habbo.com.br",
+  "url": "https://origins.habbo.com.br/api/public/users?name={}",
+  "home": "https://origins.habbo.com.br/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "uniqueId",
+  "ms": "not-found"
+ },
+ {
+  "name": "Origins.Habbo.es",
+  "url": "https://origins.habbo.es/api/public/users?name={}",
+  "home": "https://origins.habbo.es/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "uniqueId",
+  "ms": "not-found"
+ },
+ {
+  "name": "palnet",
+  "url": "https://www.palnet.io/@{}/",
+  "home": "https://www.palnet.io/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "class=\"profile-cover\"",
+  "ms": "Unknown user account!"
+ },
+ {
+  "name": "Paragraph",
+  "url": "https://paragraph.com/api/blogs/@{}",
+  "home": "https://paragraph.com/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "\"user\":{",
+  "ms": "\"Missing blog\"",
+  "headers": {
+   "Accept": "application/json"
+  }
+ },
+ {
+  "name": "Patronite",
+  "url": "https://patronite.pl/{}",
+  "home": "https://patronite.pl/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "Zostań Patronem",
+  "ms": "Nie znaleźliśmy strony której szukasz."
+ },
+ {
+  "name": "PayPal Business",
+  "url": "https://www.paypal.com/biz/profile-data/{}",
+  "home": "https://www.paypal.com/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "\"payerId\":",
+  "ms": "\"error\":\"RESOURCE_NOT_FOUND\""
+ },
+ {
+  "name": "Pillowfort",
+  "url": "https://www.pillowfort.social/{}/json/?p=1",
+  "home": "https://www.pillowfort.social/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "\"posts\":",
+  "ms": "<title>(404)</title>"
+ },
+ {
+  "name": "Planoly",
+  "url": "https://planoly.store/{}",
+  "home": "https://planoly.store/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "\"creatorLink\":{",
+  "ms": "\"statusCode\":404"
+ },
+ {
+  "name": "Plink",
+  "url": "https://plink.gg/user/{}",
+  "home": "https://plink.gg/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "class=\"user-page\"",
+  "ms": "<title>PLINK - 404 Page not found</title>"
+ },
+ {
+  "name": "Pokec",
+  "url": "https://pokec.azet.sk/{}",
+  "home": "https://pokec.azet.sk/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "idReportedUser",
+  "ms": "profile--unknown_title\">Neexistujúci používateľ"
+ },
+ {
+  "name": "Poll Everywhere",
+  "url": "https://pollev.com/proxy/api/users/{}",
+  "home": "https://pollev.com/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "name",
+  "ms": "ResourceNotFound"
+ },
+ {
+  "name": "Poshmark",
+  "url": "https://poshmark.com/closet/{}",
+  "home": "https://poshmark.com/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": " is using Poshmark to sell items from their closet.",
+  "ms": "Page not found - Poshmark"
+ },
+ {
+  "name": "Poweredbygay.social (Mastodon Instance)",
+  "url": "https://poweredbygay.social/api/v1/accounts/lookup?acct={}",
+  "home": "https://poweredbygay.social/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "display_name",
+  "ms": "Record not found"
+ },
+ {
+  "name": "Pravda.me",
+  "url": "https://pravda.me/@{}",
+  "home": "https://pravda.me/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "Социальная сеть - Правда (by mastodon)</title>",
+  "ms": "<title>The page you are looking for isn&#39;t here."
+ },
+ {
+  "name": "Privacy Guides",
+  "url": "https://discuss.privacyguides.net/u/{}.json",
+  "home": "https://discuss.privacyguides.net/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "\"user_badges\":",
+  "ms": "The requested URL or resource could not be found."
+ },
+ {
+  "name": "Pronouny",
+  "url": "https://pronouny.xyz/api/users/profile/username/{}",
+  "home": "https://pronouny.xyz/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 400,
+  "es": "\"username\":",
+  "ms": "That user doesn't exist"
+ },
+ {
+  "name": "Prose",
+  "url": "https://prose.astral.camp/{}/",
+  "home": "https://prose.astral.camp/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "blog-title",
+  "ms": "Are you sure it was ever here?"
+ },
+ {
+  "name": "QUEER PL",
+  "url": "https://queer.pl/user/{}",
+  "home": "https://queer.pl/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": " - Profile</title>",
+  "ms": "Strona nie została znaleziona"
+ },
+ {
+  "name": "Rant.li",
+  "url": "https://rant.li/{}/",
+  "home": "https://rant.li/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "blog-title",
+  "ms": "Are you sure it was ever here?"
+ },
+ {
+  "name": "Refsheet",
+  "url": "https://refsheet.net/{}",
+  "home": "https://refsheet.net/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "og:title",
+  "ms": "That's unfortunate. Where did it go?"
+ },
+ {
+  "name": "Revolut",
+  "url": "https://revolut.me/api/web-profile/{}",
+  "home": "https://revolut.me/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "\"firstName\"",
+  "ms": "\"User not found\""
+ },
+ {
+  "name": "Salon24",
+  "url": "https://www.salon24.pl/u/{}/",
+  "home": "https://www.salon24.pl/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 301,
+  "es": "<span>Obserwujących</span>",
+  "ms": "<title>Salon24 - Blogi, wiadomości, opinie i komentarze"
+ },
+ {
+  "name": "ScoutWiki",
+  "url": "https://en.scoutwiki.org/User:{}",
+  "home": "https://en.scoutwiki.org/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 301,
+  "es": "NewPP limit report",
+  "ms": "is not registered"
+ },
+ {
+  "name": "SFD",
+  "url": "https://www.sfd.pl/profile/{}",
+  "home": "https://www.sfd.pl/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "Tematy użytkownika",
+  "ms": "Brak aktywnego profilu na forum"
+ },
+ {
+  "name": "Shikimori",
+  "url": "https://shikimori.io/{}",
+  "home": "https://shikimori.io/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "class=\"profile-head\"",
+  "ms": "class=\"error-404\""
+ },
+ {
+  "name": "shopify",
+  "url": "https://{}.myshopify.com",
+  "home": "https://x.myshopify.com/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "home",
+  "ms": "Sorry, this shop is currently unavailable."
+ },
+ {
+  "name": "SimplePlanes",
+  "url": "https://www.simpleplanes.com/u/{}",
+  "home": "https://www.simpleplanes.com/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 302,
+  "es": "<h5>joined",
+  "ms": "<title>SimplePlanes Airplanes</title>"
+ },
+ {
+  "name": "SlackHoles",
+  "url": "https://slackholes.com/actor/{}/",
+  "home": "https://slackholes.com/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "Pussy and Ass Sizes",
+  "ms": "It looks like nothing was found at this location"
+ },
+ {
+  "name": "SmashRun",
+  "url": "https://smashrun.com/{}/",
+  "home": "https://smashrun.com/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "Miles run overall",
+  "ms": "no Smashrunner with the username"
+ },
+ {
+  "name": "soc.citizen4.eu",
+  "url": "https://soc.citizen4.eu/profile/{}/profile",
+  "home": "https://soc.citizen4.eu/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "@soc.citizen4.eu",
+  "ms": "Nie znaleziono"
+ },
+ {
+  "name": "social.bund.de",
+  "url": "https://social.bund.de/@{}",
+  "home": "https://social.bund.de/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "@social.bund.de) - social.bund.de</title>",
+  "ms": "<title>The page you are looking for isn&#39;t here."
+ },
+ {
+  "name": "Soup",
+  "url": "https://www.soup.io/author/{}",
+  "home": "https://www.soup.io/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 301,
+  "es": "Author at Soup.io",
+  "ms": "Soup.io - News, Sports, Entertainment, TV, Tech, Gaming"
+ },
+ {
+  "name": "stats.fm",
+  "url": "https://api.stats.fm/api/v1/users/{}",
+  "home": "https://api.stats.fm/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "\"item\":{",
+  "ms": "\"status\":404"
+ },
+ {
+  "name": "Statuspage",
+  "url": "https://{}.statuspage.io/api/v2/status.json",
+  "home": "https://x.statuspage.io/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 302,
+  "es": "updated_at",
+  "ms": "<html><body>You are being <a href=\"https://www.statuspage.io\">redirected</a>.</body></html>"
+ },
+ {
+  "name": "StreamElements",
+  "url": "https://api.streamelements.com/kappa/v2/channels/{}",
+  "home": "https://api.streamelements.com/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "\"providerId\"",
+  "ms": "error"
+ },
+ {
+  "name": "StreamLabs",
+  "url": "https://streamlabs.com/api/v6/user/{}",
+  "home": "https://streamlabs.com/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 401,
+  "es": "\"id\":",
+  "ms": "<title>Unauthorized</title>"
+ },
+ {
+  "name": "Substack",
+  "url": "https://substack.com/api/v1/user/{}/public_profile",
+  "home": "https://substack.com/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "\"id\":",
+  "ms": "\"error\":\"profile not found\""
+ },
+ {
+  "name": "sukebei.nyaa.si",
+  "url": "https://sukebei.nyaa.si/user/{}",
+  "home": "https://sukebei.nyaa.si/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "'s torrents",
+  "ms": "404 Not Found"
+ },
+ {
+  "name": "Suzuri",
+  "url": "https://suzuri.jp/{}",
+  "home": "https://suzuri.jp/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "Items",
+  "ms": "Push Space-key"
+ },
+ {
+  "name": "TamTam",
+  "url": "https://tamtam.chat/{}",
+  "home": "https://tamtam.chat/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 302,
+  "es": "deeplink=tamtam://chat/",
+  "ms": "ТамТам</title>"
+ },
+ {
+  "name": "Tanuki.pl",
+  "url": "https://tanuki.pl/profil/{}",
+  "home": "https://tanuki.pl/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "Dołączył",
+  "ms": "Nie ma takiego użytkownika"
+ },
+ {
+  "name": "Teletype",
+  "url": "https://teletype.in/@{}",
+  "home": "https://teletype.in/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "class=\"layout__content m_main blog\"",
+  "ms": "class=\"error\""
+ },
+ {
+  "name": "theguardian",
+  "url": "https://www.theguardian.com/profile/{}",
+  "home": "https://www.theguardian.com/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "content=\"&#x3C;p&#x3E;",
+  "ms": "<title>Page Not Found | The Guardian</title>"
+ },
+ {
+  "name": "Tilde.zone (Mastodon Instance)",
+  "url": "https://tilde.zone/api/v1/accounts/lookup?acct={}",
+  "home": "https://tilde.zone/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "display_name",
+  "ms": "Record not found"
+ },
+ {
+  "name": "TipeeeStream",
+  "url": "https://www.tipeeestream.com/v3.0/pages/{}",
+  "home": "https://www.tipeeestream.com/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "\"id\":",
+  "ms": "\"message\":\"Not found\""
+ },
+ {
+  "name": "Tooting.ch (Mastodon Instance)",
+  "url": "https://tooting.ch/api/v1/accounts/lookup?acct={}",
+  "home": "https://tooting.ch/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "display_name",
+  "ms": "Record not found"
+ },
+ {
+  "name": "TruckersMP.Ru",
+  "url": "https://truckersmp.ru/{}",
+  "home": "https://truckersmp.ru/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "class=\"b-user-page\"",
+  "ms": "class=\"b-handler-error-404\""
+ },
+ {
+  "name": "Twitch",
+  "url": "https://twitchtracker.com/{}",
+  "home": "https://twitchtracker.com/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "Overview</a>",
+  "ms": "<title>404 Page Not Found"
+ },
+ {
+  "name": "twpro",
+  "url": "https://twpro.jp/{}/q-data.json",
+  "home": "https://twpro.jp/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": ",200,\"/",
+  "ms": ",404,\"/"
+ },
+ {
+  "name": "UEF CONNECT",
+  "url": "https://uefconnect.uef.fi/en/{}/",
+  "home": "https://uefconnect.uef.fi/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "profile-page-header__info",
+  "ms": "<title>Page not found - UEFConnect</title>"
+ },
+ {
+  "name": "USA Life",
+  "url": "https://usa.life/{}",
+  "home": "https://usa.life/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 302,
+  "es": "Please log in to like, share and comment",
+  "ms": "Sorry, page not found"
+ },
+ {
+  "name": "uwu.ai",
+  "url": "https://{}.uwu.ai/",
+  "home": "https://x.uwu.ai/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "property=\"twitter:card\"",
+  "ms": "Sorry, the requested page could not be found."
+ },
+ {
+  "name": "VIEWBUG",
+  "url": "https://www.viewbug.com/member/{}",
+  "home": "https://www.viewbug.com/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "class=\"top-profile-membership\"",
+  "ms": "id=\"missing-this\""
+ },
+ {
+  "name": "Vivino",
+  "url": "https://api.vivino.com/users/{}",
+  "home": "https://api.vivino.com/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "\"id\":",
+  "ms": "\"error\":{\"message\":\"Record not found\"}"
+ },
+ {
+  "name": "Vkl.world (Mastodon Instance)",
+  "url": "https://vkl.world/api/v1/accounts/lookup?acct={}",
+  "home": "https://vkl.world/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "display_name",
+  "ms": "Record not found"
+ },
+ {
+  "name": "VseTop",
+  "url": "https://vsetop.org/user/{}/",
+  "home": "https://vsetop.org/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "class=\"userinfo\"",
+  "ms": "<p>Пользователь с таким именем не найден.</p>"
+ },
+ {
+  "name": "Warmerise",
+  "url": "https://warmerise.com/profile/{}",
+  "home": "https://warmerise.com/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "<div id='profile_photo",
+  "ms": "<h2>Page Not Found"
+ },
+ {
+  "name": "WeTransfer",
+  "url": "https://wepresent.wetransfer.com/artists/{}",
+  "home": "https://wepresent.wetransfer.com/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "name\":\"WePresent | ",
+  "ms": "text-display-4\">404 error"
+ },
+ {
+  "name": "Wimkin-PublicProfile",
+  "url": "https://wimkin.com/{}",
+  "home": "https://wimkin.com/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "is on WIMKIN",
+  "ms": " The page you are looking for cannot be found."
+ },
+ {
+  "name": "WordPress.com (Deleted)",
+  "url": "https://public-api.wordpress.com/rest/v1.1/sites/{}.wordpress.com",
+  "home": "https://public-api.wordpress.com/",
+  "type": "wmn",
+  "ec": 403,
+  "mc": 404,
+  "es": "\"message\":\"API calls to this endpoint have been disabled.\"",
+  "ms": "\"error\":\"unknown_blog\""
+ },
+ {
+  "name": "zmarsa.com",
+  "url": "https://zmarsa.com/uzytkownik/{}",
+  "home": "https://zmarsa.com/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "Statystyki",
+  "ms": "<title>Error 404 - zMarsa.com<"
+ },
+ {
+  "name": "Zomato",
+  "url": "https://www.zomato.com/{}/reviews",
+  "home": "https://www.zomato.com/",
+  "type": "wmn",
+  "ec": 200,
+  "mc": 404,
+  "es": "Activity</h4>",
+  "ms": "This is a 404 page and we think it's fairly clear",
+  "headers": {
+   "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:133.0) Gecko/20100101 Firefox/133.0"
+  }
+ }
+]
