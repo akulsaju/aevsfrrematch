@@ -1,4 +1,4 @@
-# PrivacyShield
+# Trivectra
 
 All-in-one privacy suite (no npm dependencies; Node 18+). Run `npm start` then open http://localhost:3000.
 

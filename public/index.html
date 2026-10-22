@@ -1,20 +1,28 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="referrer" content="no-referrer">
-<title>PrivacyShield – Audit, Vault, Transfer</title><link rel="stylesheet" href="style.css"></head>
+<title>Trivectra – Audit, Vault, Transfer</title><link rel="icon" type="image/png" href="logo.png"><link rel="stylesheet" href="style.css"></head>
 <body>
-<header><h1 class="brand"><span class="logo">🛡️</span>PrivacyShield</h1>
+<header><h1 class="brand" id="homeLink" tabindex="0" role="link" aria-label="Trivectra home"><img class="logo" src="logo.png" alt="" width="40" height="34"><span class="wm">TRIVECTRA</span></h1>
 <nav id="nav">
-<button data-tab="audit" class="active"><span class="n">1</span><span class="t">Audit</span></button>
+<button data-tab="home" class="active"><span class="t">Home</span></button>
+<button data-tab="audit"><span class="n">1</span><span class="t">Audit</span></button>
 <button data-tab="vault"><span class="n">2</span><span class="t">Vault</span></button>
 <button data-tab="p2p"><span class="n">3</span><span class="t">P2P Transfer</span></button>
 </nav></header>
 <main>
-<div class="hero"><h2>Audit it. <span>Lock it.</span> Send it directly.</h2>
-<p>Check your digital exposure, store files with zero-knowledge encryption, and transfer them peer-to-peer, all in one place.</p>
-<div class="badges"><span>🔍 240+ live sources</span><span>🔐 AES-256-GCM, keys never leave your browser</span><span>⚡ WebRTC direct transfer</span></div></div>
 
-<section id="audit" class="active">
+<section id="home" class="active">
+<div class="hero big"><img src="logo.png" alt="Trivectra" class="herologo"><h2>Your privacy, <span>in three moves.</span></h2>
+<p>Trivectra is one place to see what the internet knows about you, lock files away so even we can't read them, and send anything straight to another person. Pick what you need.</p></div>
+<div class="tiles">
+<a class="tile" href="#audit" data-go="audit"><span class="ti">&#128269;</span><h3>Footprint Audit</h3><p>Scan an email or username across 240+ live sources and get a privacy score with step-by-step removal advice.</p><span class="go">Open audit &rarr;</span></a>
+<a class="tile" href="#vault" data-go="vault"><span class="ti">&#128272;</span><h3>Encrypted Vault</h3><p>Encrypt a file in your browser and share a private link. The key never leaves the link's # part, so the server sees nothing.</p><span class="go">Open vault &rarr;</span></a>
+<a class="tile" href="#p2p" data-go="p2p"><span class="ti">&#9889;</span><h3>P2P Transfer</h3><p>Send files of any size directly between browsers with a link, 6-digit code or QR. No cloud copy is ever made.</p><span class="go">Start transfer &rarr;</span></a>
+</div>
+<div class="badges center"><span>AES-256-GCM</span><span>Zero-knowledge</span><span>WebRTC direct</span><span>No accounts</span></div>
+</section>
+<section id="audit">
 <div class="card"><h2>Digital Footprint Analyzer</h2>
 <p class="muted">Enter an email or a username. <b>Privacy notice:</b> the identifier is sent to this server, which forwards it to live public sources (email: XposedOrNot, Gravatar, GitHub, RDAP; username: GitHub, GitLab, Hacker News, Keybase, DEV plus 240+ social/forum/dev sites incl. YouTube, TikTok, X, Twitch, Pinterest, Telegram, Snapchat). Nothing is stored or logged. Only audit identifiers you own.</p>
 <div class="row"><input type="text" id="q" placeholder="you@example.com or @handle"><button class="primary" id="scan">Scan</button></div>
@@ -61,6 +69,6 @@
 <div id="pxfers"></div></div>
 </section>
 </main>
-<footer>Encryption happens in your browser. The server never sees keys or plaintext.</footer>
+<footer><div>Encryption happens in your browser. The server never sees keys or plaintext.</div><div class="made">Made by <b>Saiqua</b> and <b>Akul</b></div></footer>
 <script src="qrcode.js"></script><script src="app.js"></script>
 </body></html>
