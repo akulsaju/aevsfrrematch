@@ -501,7 +501,10 @@ async function connectRoom(code) {
 }
 $('host').onclick = async () => {
   try {
-    const { code } = await (await fetch('/api/rooms', { method: 'POST' })).json();
+    const hr = await fetch('/api/rooms', { method: 'POST' });
+    const hj = await hr.json();
+    if (!hr.ok) return pstate(hj.error || 'Could not create room.', 'bad');
+    const { code } = hj;
     const url = `${location.origin}/?room=${code}`;
     const o = $('hostOut'); o.innerHTML = `<div class="code">${code}</div><div id="qr"></div><div class="link" id="shareLink"></div><div class="row" id="shareBtns"></div><small class="muted">Share the link, code or QR. Anyone who opens it connects directly to you. Room stays open for 1 hour.</small>`;
     $('shareLink').textContent = url;
