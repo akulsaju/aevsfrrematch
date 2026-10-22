@@ -1,10 +1,10 @@
-﻿# PrivacyShield
+# PrivacyShield
 
 All-in-one privacy suite (no npm dependencies; Node 18+). Run `npm start` then open http://localhost:3000.
 
 1. **Audit** - hashes an email/handle in-browser (SHA-256), queries mock registries, computes a 0-100 privacy score with removal steps.
 2. **Vault** - AES-256-GCM chunked encryption via Web Crypto before upload. Link: `/?v=<id>#key=<key>`; the key stays in the URL fragment and is never sent to the server. Chunks are bound with AAD (index/total) to detect tampering/truncation. Links expire and can be burn-after-read.
-3. **P2P** - WebRTC data channel with backpressure. The server only relays SDP/ICE for a 6-digit room (QR encodes `/?room=<code>`); file bytes never touch it.
+3. **P2P** - WebRTC data channel with backpressure. The server only relays SDP/ICE for a 6-digit room; share the link `/?room=<code>`, the code or the QR. Multi-file queue, drag and drop, accept/decline, speed and ETA, and ack-based flow control. Receivers on Chrome/Edge stream straight to disk, so there is no size limit; other browsers buffer in memory. File bytes never touch the server.
 
 Integration: save the audit report into the Vault; send a vault file via P2P. A public STUN server is used; strict NATs may need TURN.
 
@@ -17,4 +17,4 @@ public/ is served statically and pi/[...path].js (sharing lib/api.js with the l
 1. Add the Upstash Redis integration (or set UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN; KV_REST_API_URL/KV_REST_API_TOKEN also work) in the Vercel project settings.
 2. Deploy the branch that contains this code (merge it to your production branch, normally main).
 
-Without those variables the app uses an in-memory store (fine locally, not on Vercel). On Vercel the vault is chunked (about 19 MB max, 512 KB parts), P2P signaling uses polling, and username scans stop after about 48 s (unchecked sites show as unknown). Rooms expire after 10 minutes. Some sites may block Vercel datacenter IPs more than home IPs.
+Without those variables the app uses an in-memory store (fine locally, not on Vercel). On Vercel the vault is chunked (about 19 MB max, 512 KB parts), P2P signaling uses polling, and username scans stop after about 48 s (unchecked sites show as unknown). Rooms stay open for 1 hour. Some sites may block Vercel datacenter IPs more than home IPs.

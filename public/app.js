@@ -12,7 +12,7 @@ function show(tab) {
   document.querySelectorAll('section').forEach(s => s.classList.toggle('active', s.id === tab));
   document.querySelectorAll('nav button').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
 }
-$('nav').onclick = e => e.target.dataset.tab && show(e.target.dataset.tab);
+$('nav').onclick = e => { const b = e.target.closest('button[data-tab]'); b && show(b.dataset.tab); };
 
 /* ---------- 1. OSINT audit ---------- */
 let lastReport = null;
@@ -292,7 +292,7 @@ $('decBtn').onclick = async () => {
 
 /* ---------- 3. P2P transfer over WebRTC ---------- */
 const ICE = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] };
-const MAX_BUF = 1 << 20, P_CHUNK = 16 * 1024;
+const MAX_BUF = 1 << 20, P_CHUNK = 32 * 1024;
 let peerId = crypto.randomUUID(), room = null, es = null, pc = null, dc = null, remote = null, incoming = null, pendingIce = [];
 
 function pstate(text, cls) { const s = $('pstate'); s.className = 'msg ' + (cls === 'bad' ? 'err' : cls === 'on' ? 'ok' : 'info'); s.innerHTML = `<span class="dot ${cls || ''}"></span>`; s.append(text); }
@@ -320,51 +320,137 @@ function newPeer() {
 }
 function setupChannel(ch) {
   dc = ch; ch.binaryType = 'arraybuffer'; ch.bufferedAmountLowThreshold = MAX_BUF / 2;
-  ch.onopen = () => { $('xfer').hidden = false; $('psend').disabled = false; pstate('Connected peer-to-peer (direct, encrypted by DTLS)', 'on'); };
-  ch.onclose = () => { $('psend').disabled = true; pstate('Peer disconnected.', 'bad'); if (incoming) { incoming.row.status.textContent = 'Aborted: peer disconnected'; incoming = null; } };
+  ch.onopen = () => { $('xfer').hidden = false; renderQueue(); pstate('Connected peer-to-peer (direct, encrypted by DTLS)', 'on'); };
+  ch.onclose = () => { $('psend').disabled = true; wake(); pstate('Peer disconnected.', 'bad'); if (incoming) { incoming.row.status.textContent = 'Aborted: peer disconnected'; incoming.writer && incoming.writer.abort().catch(() => { }); incoming = null; } };
   ch.onerror = () => pstate('Data channel error.', 'bad');
   ch.onmessage = onData;
 }
+const CAN_STREAM = 'showSaveFilePicker' in window; // stream straight to disk: no size limit
+const ACK_EVERY = 4 << 20, WINDOW = 16 << 20;
+let out = null, queue = [], sending = false;
+
 function addRow(label) {
-  const d = document.createElement('div'); d.className = 'finding';
+  const d = document.createElement('div'); d.className = 'finding xrow';
   const t = document.createElement('div'); t.textContent = label;
   const bar = document.createElement('div'); bar.className = 'bar'; const fill = document.createElement('div'); bar.append(fill);
   const status = document.createElement('small'); status.className = 'muted';
-  d.append(t, bar, status); $('pxfers').prepend(d);
-  return { fill, status };
+  const actions = document.createElement('div'); actions.className = 'row';
+  d.append(t, bar, status, actions); $('pxfers').prepend(d);
+  const t0 = Date.now();
+  return {
+    fill, status, actions,
+    progress(got, size) {
+      const s = (Date.now() - t0) / 1000, rate = got / Math.max(s, .5);
+      fill.style.width = Math.min(100, got / (size || 1) * 100) + '%';
+      status.textContent = `${fmt(got)} / ${fmt(size)} · ${fmt(rate)}/s` + (got < size && rate > 0 ? ` · ${Math.ceil((size - got) / rate)}s left` : '');
+    },
+  };
 }
+const wake = () => out && out.wake && out.wake();
+const until = cond => new Promise(res => { const chk = () => (cond() || !dc || dc.readyState !== 'open') ? res() : (out.wake = chk); chk(); });
+const ctl = o => dc && dc.readyState === 'open' && dc.send(JSON.stringify(o));
+
 function onData(e) {
-  if (typeof e.data === 'string') {
-    const m = JSON.parse(e.data);
-    if (m.t === 'meta') incoming = { m, got: 0, parts: [], row: addRow('⬇ ' + m.name + ' (' + fmt(m.size) + ')') };
-    else if (m.t === 'end' && incoming) {
-      const { m: meta, got, parts, row } = incoming; incoming = null;
-      if (got !== meta.size) { row.status.textContent = 'Corrupted: size mismatch'; return; }
-      const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(parts, { type: meta.type })); a.download = meta.name; a.click();
-      row.fill.style.width = '100%'; row.status.textContent = 'Received ✓';
-    }
-  } else if (incoming) {
-    incoming.parts.push(e.data); incoming.got += e.data.byteLength;
-    incoming.row.fill.style.width = (incoming.got / (incoming.m.size || 1) * 100) + '%';
-    incoming.row.status.textContent = fmt(incoming.got) + ' / ' + fmt(incoming.m.size);
+  if (typeof e.data !== 'string') {
+    const inc = incoming; if (!inc) return;
+    inc.got += e.data.byteLength;
+    const got = inc.got;
+    if (inc.writer) inc.chain = inc.chain.then(() => inc.writer.write(e.data)).then(() => { if (got - inc.lastAck >= ACK_EVERY) { inc.lastAck = got; ctl({ t: 'ack', got }); } });
+    else { inc.parts.push(e.data); if (got - inc.lastAck >= ACK_EVERY) { inc.lastAck = got; ctl({ t: 'ack', got }); } }
+    inc.row.progress(got, inc.m.size);
+    return;
   }
+  const m = JSON.parse(e.data);
+  if (m.t === 'meta') offerIncoming(m);
+  else if (m.t === 'end' && incoming) finishIncoming();
+  else if (m.t === 'accept') { out && (out.state = 'go'); wake(); }
+  else if (m.t === 'reject') { out && (out.state = 'rejected'); wake(); }
+  else if (m.t === 'ack') { out && (out.acked = m.got); wake(); }
+  else if (m.t === 'done') { out && (out.done = true); wake(); }
+  else if (m.t === 'cancel') { out && (out.state = 'cancel'); wake(); if (incoming) { incoming.row.status.textContent = 'Cancelled by sender'; incoming = null; } }
 }
-$('psend').onclick = async () => {
-  const f = $('pfile').files[0];
-  if (!f || !dc || dc.readyState !== 'open') return pstate('Pick a file and connect first.', 'bad');
-  const row = addRow('⬆ ' + f.name + ' (' + fmt(f.size) + ')'); $('psend').disabled = true;
+
+function offerIncoming(m) {
+  const row = addRow('⬇ ' + m.name + ' (' + fmt(m.size) + ')');
+  const start = async () => {
+    let writer = null;
+    if (CAN_STREAM) {
+      try { writer = await (await showSaveFilePicker({ suggestedName: m.name })).createWritable(); }
+      catch (e) { if (e.name === 'AbortError') { row.actions.innerHTML = ''; row.status.textContent = 'Declined'; return ctl({ t: 'reject' }); } writer = null; }
+    }
+    row.actions.innerHTML = '';
+    incoming = { m, got: 0, parts: [], writer, chain: Promise.resolve(), lastAck: 0, row };
+    row.status.textContent = writer ? 'Receiving, saving directly to disk…' : 'Receiving…';
+    ctl({ t: 'accept' });
+  };
+  if (!CAN_STREAM) { row.status.textContent = 'Starting…'; start(); return; } // no picker: buffer in memory, auto-accept
+  row.status.textContent = 'Incoming file. Accept to choose where to save it.';
+  const ok = document.createElement('button'); ok.className = 'primary'; ok.textContent = 'Accept & save';
+  const no = document.createElement('button'); no.className = 'ghost'; no.textContent = 'Decline';
+  ok.onclick = start;
+  no.onclick = () => { row.actions.innerHTML = ''; row.status.textContent = 'Declined'; ctl({ t: 'reject' }); };
+  row.actions.append(ok, no);
+}
+async function finishIncoming() {
+  const inc = incoming; incoming = null;
   try {
-    dc.send(JSON.stringify({ t: 'meta', name: f.name, size: f.size, type: f.type }));
+    await inc.chain;
+    if (inc.got !== inc.m.size) throw new Error('size mismatch');
+    if (inc.writer) await inc.writer.close();
+    else { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(inc.parts, { type: inc.m.type })); a.download = inc.m.name; a.click(); }
+    inc.row.fill.style.width = '100%'; inc.row.status.textContent = 'Received ✓ (' + fmt(inc.got) + ')';
+  } catch (e) { inc.row.status.textContent = 'Failed: ' + e.message; }
+  ctl({ t: 'done' });
+}
+
+async function sendFile(f) {
+  const row = addRow('⬆ ' + f.name + ' (' + fmt(f.size) + ')');
+  out = { state: 'wait', acked: 0, done: false, wake: null };
+  const cancel = document.createElement('button'); cancel.className = 'ghost'; cancel.textContent = 'Cancel';
+  cancel.onclick = () => { out.state = 'cancel'; ctl({ t: 'cancel' }); wake(); };
+  row.actions.append(cancel);
+  try {
+    ctl({ t: 'meta', name: f.name, size: f.size, type: f.type });
+    row.status.textContent = 'Waiting for the receiver to accept…';
+    await until(() => out.state !== 'wait');
+    if (out.state === 'rejected') throw new Error('declined by receiver');
+    if (out.state === 'cancel') throw new Error('cancelled');
     for (let off = 0; off < f.size; off += P_CHUNK) {
       if (!dc || dc.readyState !== 'open') throw new Error('connection lost');
+      if (out.state === 'cancel') throw new Error('cancelled');
       if (dc.bufferedAmount > MAX_BUF) await new Promise(r => { dc.onbufferedamountlow = () => { dc.onbufferedamountlow = null; r(); }; });
+      if (off - out.acked > WINDOW) await until(() => off - out.acked <= WINDOW || out.state === 'cancel');
       dc.send(await f.slice(off, off + P_CHUNK).arrayBuffer());
-      row.fill.style.width = Math.min(100, (off + P_CHUNK) / f.size * 100) + '%';
-      row.status.textContent = fmt(Math.min(off + P_CHUNK, f.size)) + ' / ' + fmt(f.size);
+      if ((off / P_CHUNK) % 16 === 0) row.progress(Math.min(off + P_CHUNK, f.size), f.size);
     }
-    dc.send(JSON.stringify({ t: 'end' })); row.status.textContent = 'Sent ✓';
+    ctl({ t: 'end' });
+    await until(() => out.done);
+    if (!out.done) throw new Error('connection lost');
+    row.fill.style.width = '100%'; row.status.textContent = 'Sent ✓ (' + fmt(f.size) + ')';
   } catch (e) { row.status.textContent = 'Failed: ' + e.message; }
-  finally { $('psend').disabled = !(dc && dc.readyState === 'open'); }
+  row.actions.innerHTML = '';
+}
+async function runQueue() {
+  if (sending) return; sending = true; $('psend').disabled = true;
+  while (queue.length && dc && dc.readyState === 'open') await sendFile(queue.shift());
+  sending = false; queue = []; renderQueue();
+  $('psend').disabled = !(dc && dc.readyState === 'open' && pickedFiles().length);
+}
+const pickedFiles = () => [...$('pfile').files];
+function renderQueue() {
+  const fs = pickedFiles();
+  $('pqueue').textContent = fs.length ? `${fs.length} file(s) selected · ${fmt(fs.reduce((a, f) => a + f.size, 0))}` : 'No files selected';
+  $('psend').disabled = sending || !fs.length || !(dc && dc.readyState === 'open');
+}
+$('pfile').onchange = renderQueue;
+const dz = $('dropzone');
+['dragenter', 'dragover'].forEach(ev => dz.addEventListener(ev, e => { e.preventDefault(); dz.classList.add('over'); }));
+['dragleave', 'drop'].forEach(ev => dz.addEventListener(ev, e => { e.preventDefault(); dz.classList.remove('over'); }));
+dz.addEventListener('drop', e => { if (e.dataTransfer.files.length) { $('pfile').files = e.dataTransfer.files; renderQueue(); } });
+$('psend').onclick = () => {
+  if (!dc || dc.readyState !== 'open') return pstate('Connect to a peer first.', 'bad');
+  queue = pickedFiles(); if (!queue.length) return;
+  $('pfile').value = ''; runQueue();
 };
 $('leave').onclick = () => { teardown(false); $('hostOut').innerHTML = ''; pstate('Disconnected'); };
 
@@ -400,7 +486,7 @@ async function connectRoom(code) {
     try {
       const r = await fetch(`/api/rooms/${code}/poll?peer=${peerId}&after=${after}`);
       if (gen !== pollGen) return;
-      if (r.status === 404) { pstate('Room closed or expired.', 'bad'); teardown(false); return; }
+      if (r.status === 404) { if (dc && dc.readyState === 'open') return; pstate('Room closed or expired.', 'bad'); teardown(false); return; }
       const d = await r.json(); fails = 0; after = d.next;
       for (const m of d.msgs) {
         if (m.t === 'peer') await startOffer(m.peer);
@@ -408,7 +494,7 @@ async function connectRoom(code) {
         else if (m.t === 'left') { pstate('Peer left the room.', 'bad'); $('psend').disabled = true; }
       }
     } catch {
-      if (++fails >= 5) { pstate('Signaling server unreachable. Check your connection and retry.', 'bad'); teardown(false); return; }
+      if (++fails >= 5) { if (dc && dc.readyState === 'open') return; pstate('Signaling server unreachable. Check your connection and retry.', 'bad'); teardown(false); return; }
     }
     await new Promise(r => setTimeout(r, 800));
   }
@@ -417,7 +503,12 @@ $('host').onclick = async () => {
   try {
     const { code } = await (await fetch('/api/rooms', { method: 'POST' })).json();
     const url = `${location.origin}/?room=${code}`;
-    const o = $('hostOut'); o.innerHTML = `<div class="code">${code}</div><div id="qr"></div><small class="muted">Room expires in 10 minutes</small>`;
+    const o = $('hostOut'); o.innerHTML = `<div class="code">${code}</div><div id="qr"></div><div class="link" id="shareLink"></div><div class="row" id="shareBtns"></div><small class="muted">Share the link, code or QR. Anyone who opens it connects directly to you. Room stays open for 1 hour.</small>`;
+    $('shareLink').textContent = url;
+    const cp = document.createElement('button'); cp.className = 'primary'; cp.textContent = '🔗 Copy link';
+    cp.onclick = () => navigator.clipboard.writeText(url).then(() => { cp.textContent = 'Copied ✓'; setTimeout(() => cp.textContent = '🔗 Copy link', 2000); });
+    $('shareBtns').append(cp);
+    if (navigator.share) { const sh = document.createElement('button'); sh.className = 'ghost'; sh.textContent = '📤 Share…'; sh.onclick = () => navigator.share({ title: 'PrivacyShield file transfer', url }).catch(() => { }); $('shareBtns').append(sh); }
     try { const q = qrcode(0, 'M'); q.addData(url); q.make(); $('qr').innerHTML = q.createSvgTag({ cellSize: 4, margin: 0, scalable: true }); } catch { }
     connectRoom(code);
   } catch { pstate('Could not create room (server unreachable).', 'bad'); }
