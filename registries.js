@@ -22,6 +22,8 @@ const level = s => (s >= 25 ? 'Critical' : s >= 15 ? 'High' : s >= 10 ? 'Medium'
 function finding(id, name, type, severity, o) {
   return { id, name, type, severity, level: level(severity), effort: 'Low', time: '5-10 min', ...o };
 }
+// Key/value rows describing the actual public data that was found.
+const fields = pairs => pairs.filter(([, v]) => v !== undefined && v !== null && String(v).trim() !== '').map(([k, v]) => ({ k, v: String(v).replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 300) }));
 
 /* ---------- email providers ---------- */
 async function xposedOrNot(email) {
@@ -69,6 +71,8 @@ async function gravatar(email) {
   return [finding('gravatar', 'Gravatar public profile', 'Social media', 12, {
     detail: `A public Gravatar profile is linked to this email${e.displayName ? ' (display name "' + e.displayName + '")' : ''}. Anyone who knows your email can look it up.`,
     exposed, risk: 'Links your email to your identity and other accounts', firstSeen: 'unknown', source: 'Gravatar', url: e.profileUrl || `https://gravatar.com/${hash}`,
+    fields: fields([['Display name', e.displayName], ['Full name', e.name && e.name.formatted], ['Username', e.preferredUsername], ['Location', e.currentLocation], ['About', e.aboutMe],
+      ['Linked accounts', (e.accounts || []).map(a => `${a.shortname}${a.username ? ': ' + a.username : ''}`).join(', ')], ['Websites', (e.urls || []).map(u => u.value).join(', ')]]),
     steps: ['Sign in at gravatar.com with this email.', 'Open My Profile and remove name, location, links and verified accounts.', 'Set avatar rating and profile visibility to hide details, or delete the Gravatar account.'],
   })];
 }
@@ -81,6 +85,7 @@ async function githubCommits(email) {
     detail: `Commits authored with this email are publicly searchable${c.author ? ' and tied to the account @' + c.author.login : ''}. Example: ${c.repository.full_name}.`,
     exposed: ['Commit author email', 'Real name', 'Commit timestamps / timezone'], risk: 'Email harvesting and identity correlation',
     effort: 'Medium', time: '10-30 min', firstSeen: (c.commit.author.date || '').slice(0, 10) || 'unknown', source: 'GitHub Search API', url: c.html_url,
+    fields: fields([['Author name', c.commit.author.name], ['Author email', c.commit.author.email], ['GitHub account', c.author && '@' + c.author.login], ['Repository', c.repository.full_name], ['Commit date', c.commit.author.date], ['Commit message', c.commit.message && c.commit.message.split('\n')[0]]]),
     steps: ['In GitHub Settings > Emails enable "Keep my email addresses private".', 'Set git config user.email to your ID+username@users.noreply.github.com address.', 'For sensitive repos, rewrite history with git filter-repo and force-push.', 'Ask collaborators to re-clone forks.'],
   })];
 }
@@ -113,13 +118,14 @@ async function whoisDomain(email) {
     detail: `The public RDAP/WHOIS record for ${domain} lists personal or organisation contact details.`,
     exposed: uniq, risk: 'Stalking, spam and social engineering from public domain records', firstSeen: created ? created.eventDate.slice(0, 10) : 'unknown',
     source: 'RDAP (rdap.org)', url: 'https://rdap.org/domain/' + domain,
+    fields: fields([['Domain', domain], ['Registered', created && created.eventDate.slice(0, 10)], ['Registrar', (d.entities || []).filter(en => (en.roles || []).includes('registrar')).map(en => en.vcardArray && (en.vcardArray[1].find(x => x[0] === 'fn') || [])[3]).filter(Boolean)[0]], ['Contact data published', uniq.join(', ')]]),
     steps: ['Log in to your domain registrar.', 'Enable WHOIS privacy / proxy protection.', 'Replace contact details with a role-based address.', 'Re-check the RDAP record after 24 hours.'],
   })];
 }
 
 /* ---------- handle providers ---------- */
-function profile(id, name, severity, url, exposed, detail, steps, first) {
-  return finding(id, name, 'Public profile', severity, { detail, exposed, risk: 'Public profile can be correlated with your other accounts', firstSeen: first || 'unknown', source: name, url, steps });
+function profile(id, name, severity, url, exposed, detail, steps, first, rows) {
+  return finding(id, name, 'Public profile', severity, { detail, exposed, risk: 'Public profile can be correlated with your other accounts', firstSeen: first || 'unknown', source: name, url, steps, fields: rows || [] });
 }
 const iso = s => (s ? String(s).slice(0, 10) : 'unknown');
 
@@ -129,21 +135,24 @@ async function githubUser(h) {
   const exposed = ['Username', 'Avatar'];
   ['name', 'company', 'location', 'email', 'blog', 'bio', 'twitter_username'].forEach(k => d[k] && exposed.push(k.replace('_', ' ')));
   return [profile('github', 'GitHub', 10 + (d.email ? 5 : 0), d.html_url, exposed, `Public GitHub profile with ${d.public_repos} repos and ${d.followers} followers.`,
-    ['Open Settings > Public profile and clear name, bio, company, location and links.', 'Untick "Public email" and enable "Keep my email private".', 'Review public repos/gists for personal data, or make them private.'], iso(d.created_at))];
+    ['Open Settings > Public profile and clear name, bio, company, location and links.', 'Untick "Public email" and enable "Keep my email private".', 'Review public repos/gists for personal data, or make them private.'], iso(d.created_at),
+    fields([['Username', d.login], ['Name', d.name], ['Bio', d.bio], ['Company', d.company], ['Location', d.location], ['Public email', d.email], ['Website', d.blog], ['Twitter/X', d.twitter_username], ['Public repos', d.public_repos], ['Followers', d.followers], ['Following', d.following], ['Account created', iso(d.created_at)]]))];
 }
 async function gitlabUser(h) {
   const d = await getJson('https://gitlab.com/api/v4/users?username=' + encodeURIComponent(h));
   const u = Array.isArray(d) && d[0];
   if (!u) return [];
   return [profile('gitlab', 'GitLab', 8, u.web_url, ['Username', 'Avatar', 'Projects'], 'Public GitLab profile found.',
-    ['Open Preferences > Profile.', 'Enable "Private profile".', 'Review public projects and snippets.'])];
+    ['Open Preferences > Profile.', 'Enable "Private profile".', 'Review public projects and snippets.'], undefined,
+    fields([['Username', u.username], ['Name', u.name], ['Profile URL', u.web_url], ['State', u.state]]))];
 }
 async function hackerNews(h) {
   const d = await getJson('https://hacker-news.firebaseio.com/v0/user/' + encodeURIComponent(h) + '.json');
   if (!d) return [];
   return [profile('hn', 'Hacker News', 8, 'https://news.ycombinator.com/user?id=' + h, ['Username', 'About text', 'Comment & submission history'],
     `Public Hacker News account with ${d.karma} karma and ${(d.submitted || []).length} public items.`,
-    ['Edit your "about" field to remove personal details.', 'Email hn@ycombinator.com to request deletion or anonymisation of old comments.'], d.created ? new Date(d.created * 1000).toISOString().slice(0, 10) : 'unknown')];
+    ['Edit your "about" field to remove personal details.', 'Email hn@ycombinator.com to request deletion or anonymisation of old comments.'], d.created ? new Date(d.created * 1000).toISOString().slice(0, 10) : 'unknown',
+    fields([['Username', d.id], ['About', d.about], ['Karma', d.karma], ['Public items', (d.submitted || []).length], ['Account created', d.created ? new Date(d.created * 1000).toISOString().slice(0, 10) : '']]))];
 }
 async function keybase(h) {
   const d = await getJson('https://keybase.io/_/api/1.0/user/lookup.json?usernames=' + encodeURIComponent(h));
@@ -151,14 +160,17 @@ async function keybase(h) {
   if (!u) return [];
   const proofs = Object.keys((u.proofs_summary && u.proofs_summary.by_presentation_group) || {});
   return [profile('keybase', 'Keybase', 12, 'https://keybase.io/' + h, ['Username', 'Public keys', ...(u.profile && u.profile.full_name ? ['Full name'] : []), ...(proofs.length ? ['Linked accounts: ' + proofs.join(', ')] : [])],
-    'Public Keybase identity with cryptographic proofs linking your accounts.', ['Revoke identity proofs you no longer want public in the Keybase app.', 'Clear full name, bio and location in Profile settings.', 'Or delete the account.'], d.them[0].basics ? new Date(u.basics.ctime * 1000).toISOString().slice(0, 10) : 'unknown')];
+    'Public Keybase identity with cryptographic proofs linking your accounts.', ['Revoke identity proofs you no longer want public in the Keybase app.', 'Clear full name, bio and location in Profile settings.', 'Or delete the account.'], d.them[0].basics ? new Date(u.basics.ctime * 1000).toISOString().slice(0, 10) : 'unknown',
+    fields([['Username', h], ['Full name', u.profile && u.profile.full_name], ['Location', u.profile && u.profile.location], ['Bio', u.profile && u.profile.bio],
+      ['Linked accounts', ((u.proofs_summary && u.proofs_summary.all) || []).map(p => `${p.proof_type}: ${p.nametag}`).join(', ') || proofs.join(', ')]]))];
 }
 async function devTo(h) {
   const d = await getJson('https://dev.to/api/users/by_username?url=' + encodeURIComponent(h));
   if (!d || !d.username) return [];
   const exposed = ['Username', 'Name'];
   ['twitter_username', 'github_username', 'location', 'summary', 'website_url'].forEach(k => d[k] && exposed.push(k.replace('_', ' ')));
-  return [profile('devto', 'DEV Community', 8, 'https://dev.to/' + d.username, exposed, 'Public DEV profile found.', ['Open Settings > Profile and remove location, links and summary.', 'Unpublish or delete old posts that reveal personal info.'], iso(d.joined_at))];
+  return [profile('devto', 'DEV Community', 8, 'https://dev.to/' + d.username, exposed, 'Public DEV profile found.', ['Open Settings > Profile and remove location, links and summary.', 'Unpublish or delete old posts that reveal personal info.'], iso(d.joined_at),
+    fields([['Username', d.username], ['Name', d.name], ['Summary', d.summary], ['Location', d.location], ['Website', d.website_url], ['Twitter/X', d.twitter_username], ['GitHub', d.github_username], ['Joined', d.joined_at]]))];
 }
 
 const EMAIL_PROVIDERS = [['XposedOrNot breach database', xposedOrNot], ['Gravatar', gravatar], ['GitHub commit search', githubCommits], ['RDAP domain registry', whoisDomain]];
