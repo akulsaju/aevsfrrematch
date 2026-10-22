@@ -5,7 +5,7 @@ body{margin:0;font:15px/1.6 Inter,system-ui,-apple-system,"Segoe UI",sans-serif;
 background:radial-gradient(900px 500px at 85% -10%,rgba(139,92,246,.16),transparent 60%),radial-gradient(800px 500px at -10% 10%,rgba(79,140,255,.14),transparent 60%),var(--bg);background-attachment:fixed}
 header{position:sticky;top:0;z-index:10;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 28px;border-bottom:1px solid var(--line);background:rgba(7,11,18,.8);backdrop-filter:blur(12px);flex-wrap:wrap}
 .brand{display:flex;align-items:center;gap:10px;font-size:18px;margin:0;letter-spacing:-.2px}
-.logo{width:32px;height:32px;border-radius:9px;display:grid;place-items:center;background:linear-gradient(135deg,var(--acc),var(--acc2));box-shadow:0 4px 18px rgba(79,140,255,.4)}
+.logo{height:42px;width:auto;filter:drop-shadow(0 2px 12px rgba(0,200,255,.35))}.wm{font-weight:800;letter-spacing:1.5px;background:linear-gradient(90deg,#1a5cff,#00e5ff);-webkit-background-clip:text;background-clip:text;color:transparent}
 nav{display:flex;gap:4px;background:var(--panel);border:1px solid var(--line);padding:4px;border-radius:12px}
 nav button{display:flex;align-items:center;gap:8px;background:none;border:0;color:var(--mut);padding:8px 16px;border-radius:9px;cursor:pointer;font:500 14px inherit;transition:.15s}
 nav button:hover{color:var(--fg)}

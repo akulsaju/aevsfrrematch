@@ -511,7 +511,7 @@ $('host').onclick = async () => {
     const cp = document.createElement('button'); cp.className = 'primary'; cp.textContent = '🔗 Copy link';
     cp.onclick = () => navigator.clipboard.writeText(url).then(() => { cp.textContent = 'Copied ✓'; setTimeout(() => cp.textContent = '🔗 Copy link', 2000); });
     $('shareBtns').append(cp);
-    if (navigator.share) { const sh = document.createElement('button'); sh.className = 'ghost'; sh.textContent = '📤 Share…'; sh.onclick = () => navigator.share({ title: 'PrivacyShield file transfer', url }).catch(() => { }); $('shareBtns').append(sh); }
+    if (navigator.share) { const sh = document.createElement('button'); sh.className = 'ghost'; sh.textContent = '📤 Share…'; sh.onclick = () => navigator.share({ title: 'Trivectra file transfer', url }).catch(() => { }); $('shareBtns').append(sh); }
     try { const q = qrcode(0, 'M'); q.addData(url); q.make(); $('qr').innerHTML = q.createSvgTag({ cellSize: 4, margin: 0, scalable: true }); } catch { }
     connectRoom(code);
   } catch { pstate('Could not create room (server unreachable).', 'bad'); }
