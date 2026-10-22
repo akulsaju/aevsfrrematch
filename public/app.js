@@ -171,7 +171,7 @@ const signal = data => fetch(`/api/rooms/${room}/signal`, { method: 'POST', body
 
 function teardown(keepRoom) {
   dc && dc.close(); pc && pc.close(); dc = pc = remote = null; pendingIce = [];
-  if (!keepRoom) { es && es.close(); es = null; room = null; $('xfer').hidden = true; $('hostOut').innerHTML = ''; }
+  if (!keepRoom) { es && es.close(); es = null; room = null; $('xfer').hidden = true; }
   $('psend').disabled = true;
 }
 function newPeer() {
@@ -233,7 +233,7 @@ $('psend').onclick = async () => {
   } catch (e) { row.status.textContent = 'Failed: ' + e.message; }
   finally { $('psend').disabled = !(dc && dc.readyState === 'open'); }
 };
-$('leave').onclick = () => { teardown(false); pstate('Disconnected'); };
+$('leave').onclick = () => { teardown(false); $('hostOut').innerHTML = ''; pstate('Disconnected'); };
 
 function connectRoom(code) {
   teardown(false); room = code; peerId = crypto.randomUUID();
