@@ -1,6 +1,6 @@
 {
   "functions": {
-    "api/[...path].js": { "maxDuration": 60, "includeFiles": "{sites.json,registries.js,footprint.js,lib/**}" }
+    "api/[...path].js": { "maxDuration": 60, "includeFiles": "{sites*.json,registries.js,footprint.js,lib/**}" }
   },
   "headers": [
     { "source": "/(.*)", "headers": [{ "key": "Referrer-Policy", "value": "no-referrer" }] }

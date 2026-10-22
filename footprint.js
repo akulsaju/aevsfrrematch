@@ -3,11 +3,13 @@
 const fs = require('fs');
 const path = require('path');
 
-const SITES_FILE = path.join(__dirname, 'sites.json');
+const SITES_FILES = ['sites.json', 'sites-wmn.json'].map(f => path.join(__dirname, f));
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36';
 
 function loadSites() {
-  try { return JSON.parse(fs.readFileSync(SITES_FILE, 'utf8')); } catch { return []; }
+  const out = [];
+  for (const f of SITES_FILES) { try { out.push(...JSON.parse(fs.readFileSync(f, 'utf8'))); } catch { } }
+  return out;
 }
 
 const fill = (s, u) => String(s).replaceAll('{}', u);
@@ -22,8 +24,14 @@ async function checkSite(site, username, timeout = 8000) {
     const r = await fetch(url, {
       method: site.method || (site.type === 'status_code' || site.type === 'response_url' ? 'GET' : 'GET'),
       headers: { 'User-Agent': UA, 'Accept-Language': 'en-US,en;q=0.9', ...(site.headers || {}) },
-      redirect: site.type === 'response_url' ? 'manual' : 'follow', signal: ctl.signal,
+      redirect: site.type === 'response_url' || (site.type === 'wmn' && (site.ec >= 300 || site.mc >= 300)) ? 'manual' : 'follow', signal: ctl.signal,
     });
+    if (site.type === 'wmn') {
+      const body = (await r.text()).slice(0, 400000);
+      const missing = r.status === site.mc || (site.ms && body.includes(site.ms));
+      if (r.status === site.ec && (!site.es || body.includes(site.es)) && !(site.ms && body.includes(site.ms))) return 'found';
+      return missing ? 'missing' : 'unknown';
+    }
     if (site.type === 'status_code') {
       if (r.status >= 200 && r.status < 300) return 'found';
       if (r.status === 404 || r.status === 410 || r.status === 400) return 'missing';

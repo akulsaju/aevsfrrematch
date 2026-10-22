@@ -8,7 +8,7 @@ All-in-one privacy suite (no npm dependencies; Node 18+). Run `npm start` then o
 
 Integration: save the audit report into the Vault; send a vault file via P2P. A public STUN server is used; strict NATs may need TURN.
 
-Username scans also check ~240 sites (YouTube, TikTok, X, Twitch, Pinterest, Telegram, Snapchat, ...) via profile-URL checks. Site definitions come from the MIT-licensed Sherlock project and are filtered by `node tools/validate-sites.js <sherlock data.json>`, which keeps only sites that correctly distinguish an existing from a nonexistent user. Instagram, Facebook, Reddit, Threads, LinkedIn and Spotify require login to check, so the report gives manual-check links instead of guessing.
+Username scans also check ~410 sites (YouTube, TikTok, X, Twitch, Pinterest, Telegram, Snapchat, ...) via profile-URL checks. Site definitions come from the MIT-licensed Sherlock project and are filtered by `node tools/validate-sites.js <sherlock data.json>`, which keeps only sites that correctly distinguish an existing from a nonexistent user. A further 171 sites (`sites-wmn.json`) come from the CC BY-SA 4.0 [WhatsMyName](https://github.com/WebBreacher/WhatsMyName) project, validated with `node tools/validate-wmn.js <wmn-data.json>` (adult and bot-protected sites excluded). Instagram, Facebook, Reddit, Threads, LinkedIn and Spotify require login to check, so the report gives manual-check links instead of guessing.
 
 ## Deploying on Vercel
 
