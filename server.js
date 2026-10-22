@@ -36,6 +36,7 @@ function readBody(req, limit) {
 }
 
 const { scan } = require('./registries');
+const { scanUsername } = require('./footprint');
 
 function cleanup() {
   const now = Date.now();
@@ -50,6 +51,21 @@ setInterval(cleanup, 15000).unref();
 async function api(req, res, url) {
   const parts = url.pathname.split('/').filter(Boolean); // ['api', ...]
   const [, a, b, c] = parts;
+
+  if (a === 'footprint' && req.method === 'POST') {
+    let body;
+    try { body = JSON.parse((await readBody(req, 2048)).toString()); } catch { return json(res, 400, { error: 'Bad request' }); }
+    const u = String(body.q || '').trim().replace(/^@/, '').toLowerCase();
+    if (!/^[a-z0-9][a-z0-9_.-]{0,38}$/.test(u)) return json(res, 400, { error: 'Enter a valid username (letters, digits, . _ -).' });
+    res.writeHead(200, { 'Content-Type': 'application/x-ndjson', 'Cache-Control': 'no-store' });
+    const line = o => res.writableEnded || res.write(JSON.stringify(o) + '\n');
+    const out = await scanUsername(u, (done, total, hit) => line({ done, total, hit: hit && { name: hit.name, url: hit.url.replaceAll('{}', u) } }));
+    line({
+      final: true, total: out.total, manual: out.manual,
+      unknown: out.results.filter(r => r.status === 'unknown').length,
+    });
+    return res.end();
+  }
 
   if (a === 'osint' && req.method === 'POST') {
     let body;

@@ -1,0 +1,15 @@
+[
+ { "name": "TikTok", "url": "https://www.tiktok.com/@{}", "home": "https://www.tiktok.com", "type": "status_code", "probe": "https://www.tiktok.com/oembed?url=https://www.tiktok.com/@{}", "claimed": "charlidamelio" },
+ { "name": "X (Twitter)", "url": "https://x.com/{}", "home": "https://x.com", "type": "status_code", "regex": "^[A-Za-z0-9_]{1,15}$", "claimed": "jack" },
+ { "name": "Bluesky", "url": "https://bsky.app/profile/{}.bsky.social", "home": "https://bsky.app", "type": "status_code", "probe": "https://public.api.bsky.app/xrpc/app.bsky.actor.getProfile?actor={}.bsky.social", "claimed": "jay" },
+ { "name": "Pinterest", "url": "https://www.pinterest.com/{}/", "home": "https://www.pinterest.com", "type": "status_code", "probe": "https://www.pinterest.com/oembed.json?url=https://www.pinterest.com/{}/", "claimed": "pinterest" },
+ { "name": "Steam", "url": "https://steamcommunity.com/id/{}", "home": "https://steamcommunity.com", "type": "message", "msg": "<title>Steam Community :: Error</title>", "claimed": "gabelogannewell" },
+ { "name": "Twitch", "url": "https://www.twitch.tv/{}", "home": "https://www.twitch.tv", "type": "message", "msg": "<title>Twitch</title>", "claimed": "xqc" },
+ { "name": "Telegram", "url": "https://t.me/{}", "home": "https://t.me", "type": "has", "has": "tgme_page_title", "regex": "^[a-zA-Z0-9_]{5,32}$", "claimed": "durov" },
+ { "name": "YouTube", "url": "https://www.youtube.com/@{}", "home": "https://www.youtube.com", "type": "status_code", "claimed": "youtube" },
+ { "name": "Snapchat", "url": "https://www.snapchat.com/add/{}", "home": "https://www.snapchat.com", "type": "status_code", "claimed": "teamsnapchat" },
+ { "name": "SoundCloud", "url": "https://soundcloud.com/{}", "home": "https://soundcloud.com", "type": "status_code", "claimed": "soundcloud" },
+ { "name": "Vimeo", "url": "https://vimeo.com/{}", "home": "https://vimeo.com", "type": "status_code", "claimed": "staff" },
+ { "name": "Flickr", "url": "https://www.flickr.com/people/{}", "home": "https://www.flickr.com", "type": "status_code", "claimed": "flickr" },
+ { "name": "Mastodon.social", "url": "https://mastodon.social/@{}", "home": "https://mastodon.social", "type": "status_code", "claimed": "Gargron" }
+]

@@ -16,17 +16,65 @@ $('nav').onclick = e => e.target.dataset.tab && show(e.target.dataset.tab);
 
 /* ---------- 1. OSINT audit ---------- */
 let lastReport = null;
+async function footprintScan(username) {
+  $('aprog').hidden = false; $('aprogText').textContent = 'Checking profiles…';
+  const r = await fetch('/api/footprint', { method: 'POST', body: JSON.stringify({ q: username }) });
+  if (!r.ok) throw new Error((await r.json().catch(() => ({}))).error || 'Footprint scan failed');
+  const reader = r.body.getReader(), td = new TextDecoder(); let buf = '', hits = [], fin = null, last = { done: 0, total: 0 };
+  for (;;) {
+    const { value, done } = await reader.read(); if (done) break;
+    buf += td.decode(value, { stream: true });
+    let i; while ((i = buf.indexOf('\n')) >= 0) {
+      const l = buf.slice(0, i); buf = buf.slice(i + 1); if (!l) continue;
+      const m = JSON.parse(l);
+      if (m.final) fin = m;
+      else {
+        last = m; if (m.hit) hits.push(m.hit);
+        $('abar').style.width = (m.done / m.total * 100) + '%';
+        $('aprogText').textContent = `Checked ${m.done}/${m.total} sites · ${hits.length} profile(s) found`;
+      }
+    }
+  }
+  if (!fin) throw new Error('Footprint scan was interrupted (network drop). Retry.');
+  hits.sort((a, b) => a.name.localeCompare(b.name));
+  return { hits, total: fin.total, checked: fin.total - fin.unknown, unknown: fin.unknown, manual: fin.manual };
+}
+function footprintFinding(hits, checked) {
+  const n = hits.length, sev = Math.min(35, Math.round(4 + n * 1.5));
+  return {
+    id: 'footprint', name: `Username found on ${n} more platform${n === 1 ? '' : 's'}`, type: 'Social footprint', severity: sev,
+    level: sev >= 25 ? 'Critical' : sev >= 15 ? 'High' : sev >= 10 ? 'Medium' : 'Low',
+    detail: `A profile page exists for this username on ${n} of ${checked} reachable sites. A reused username lets anyone link your accounts together.`,
+    exposed: ['Username', 'Public profile pages', 'Cross-platform identity link'], risk: 'Account correlation, doxxing and targeted social engineering',
+    effort: 'High', time: `${Math.max(10, n * 5)} min`, firstSeen: 'unknown', source: 'Profile URL checks', url: null,
+    items: hits.map(h => ({ name: h.name, date: '', data: h.url, url: h.url })),
+    steps: ['Open each profile below and confirm whether it is yours.', 'Delete accounts you no longer use (search "<site> delete account").', 'For accounts you keep, set them to private and remove bio, photo, location and links.', 'Use a different username per context so profiles cannot be correlated.', 'Impersonation? Use the platform\'s report form.'],
+  };
+}
 $('scan').onclick = async () => {
   const q = $('q').value.trim().toLowerCase();
   if (!q) return msg($('auditMsg'), 'Enter an email or handle first.', 'err');
   $('scan').disabled = true; $('result').hidden = true;
   msg($('auditMsg'), 'Querying live public registries…');
+  $('abar').style.width = '0'; $('aprog').hidden = true;
   try {
+    const isEmail = q.includes('@');
+    const username = q.replace(/^@/, '');
+    const fpPromise = isEmail ? null : footprintScan(username);
     const r = await fetch('/api/osint', { method: 'POST', body: JSON.stringify({ q }) });
     const data = await r.json().catch(() => ({}));
     if (!r.ok) throw new Error(data.error || 'Registry error');
-    renderAudit(q, data.findings, data.sources);
-    const down = data.sources.filter(s => !s.ok);
+    let findings = data.findings, sources = data.sources, fp = null;
+    if (fpPromise) {
+      fp = await fpPromise;
+      // Dedicated provider findings already cover these platforms in more detail.
+      const covered = new Set(findings.map(f => f.source));
+      const extra = fp.hits.filter(h => !covered.has(h.name));
+      if (extra.length) findings = [...findings, footprintFinding(extra, fp.checked)];
+      sources = [...sources, { name: `Profile URL checks (${fp.total} sites)`, ok: fp.checked > 0, hits: fp.hits.length, error: 'no site responded' }];
+    }
+    renderAudit(q, findings, sources, fp);
+    const down = sources.filter(s => !s.ok);
     msg($('auditMsg'), down.length ? `Partial results: ${down.map(s => `${s.name} (${s.error})`).join(', ')} unavailable. Score may be understated; retry later.` : '', 'err');
   } catch (e) {
     msg($('auditMsg'), 'Scan failed: ' + (e.message === 'Failed to fetch' ? 'network unreachable. Check your connection and retry.' : e.message), 'err');
@@ -70,8 +118,9 @@ function reportHtml(r) {
 }
 function el(tag, cls, text) { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
 
-function renderAudit(q, findings, sources = []) {
+function renderAudit(q, findings, sources = [], fp = null) {
   const r = buildReport(q, findings, sources); lastData = r;
+  if (fp) r.manualChecks = fp.manual;
   const color = r.score >= 75 ? '#3fb950' : r.score >= 45 ? '#d29922' : '#f85149';
   $('result').hidden = false;
   $('arc').style.stroke = color; $('arc').setAttribute('stroke-dasharray', `${r.score} 100`);
@@ -93,12 +142,17 @@ function renderAudit(q, findings, sources = []) {
     const ol = el('ol'); f.steps.forEach(s => ol.append(el('li', null, s)));
     d.append(sm, meta, el('div', null, f.detail), el('div', null, 'Data exposed: ' + f.exposed.join(', ')), el('div', null, 'Risk: ' + f.risk));
     if (f.url && /^https:\/\//.test(f.url)) { const a = el('a', null, 'View source ↗'); a.href = f.url; a.target = '_blank'; a.rel = 'noopener noreferrer'; d.append(a); }
-    if (f.items) { const ul = el('ul'); f.items.forEach(i => ul.append(el('li', null, `${i.name}${i.date ? ' (' + i.date + ')' : ''} — ${i.data}`))); d.append(el('div', 'muted', 'Breaches:'), ul); }
+    if (f.items) { const ul = el('ul'); f.items.forEach(i => { const li = el('li'); if (i.url && /^https?:\/\//.test(i.url)) { const a = el('a', null, i.name); a.href = i.url; a.target = '_blank'; a.rel = 'noopener noreferrer'; li.append(a); } else li.textContent = `${i.name}${i.date ? ' (' + i.date + ')' : ''} — ${i.data}`; ul.append(li); }); d.append(el('div', 'muted', f.id === 'footprint' ? 'Profiles found:' : 'Breaches:'), ul); }
     d.append(el('div', 'fix', `Removal steps (effort ${f.effort}, ~${f.time}):`), ol);
     box.append(d);
   });
   const st = $('sources'); st.innerHTML = '';
   sources.forEach(s => st.append(el('span', 'chip', (s.ok ? '✓ ' : '✗ ') + s.name + (s.ok ? ` (${s.hits})` : ''))));
+  const mc = $('manual'); mc.innerHTML = '';
+  if (fp && fp.manual.length) {
+    mc.append(el('div', 'muted', `Cannot be checked automatically (login wall) - open to verify manually. ${fp.unknown} of ${fp.total} sites were unreachable/blocked.`));
+    const row = el('div', 'row'); fp.manual.forEach(m => { const a = el('a', 'chip', m.name + ' ↗'); a.href = m.url; a.target = '_blank'; a.rel = 'noopener noreferrer'; row.append(a); }); mc.append(row);
+  }
   const plan = $('plan'); plan.innerHTML = '';
   r.actionPlan.forEach(p => plan.append(el('li', null, `${p.source}: ${p.effort} effort, ~${p.estimatedTime}, +${p.pointsRecovered} pts`)));
   $('planWrap').hidden = !r.actionPlan.length;
