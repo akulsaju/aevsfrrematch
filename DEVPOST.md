@@ -2,7 +2,7 @@
 
 ### Your privacy. Your keys. Your connection.
 
-![Trivectra animated overview: Audit, Vault, and P2P Transfer](https://raw.githubusercontent.com/akulsaju/aevsfrrematch/akulsaju-more-sites-2/public/devpost-hero.gif)
+![Trivectra animated overview: Audit, Vault, and P2P Transfer](https://raw.githubusercontent.com/akulsaju/aevsfrrematch/devpost-description/public/devpost-hero.gif)
 
 ![Privacy-first](https://img.shields.io/badge/PRIVACY-first-7c5cff?style=for-the-badge)
 ![Browser-side encryption](https://img.shields.io/badge/ENCRYPTION-AES--256--GCM-06b6d4?style=for-the-badge)
