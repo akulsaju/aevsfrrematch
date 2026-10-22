@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>PrivacyShield – Audit, Vault, Transfer</title><link rel="stylesheet" href="style.css"></head>
+<body>
+<header><h1>🛡️ PrivacyShield</h1>
+<nav id="nav">
+<button data-tab="audit" class="active">1 · Audit</button>
+<button data-tab="vault">2 · Vault</button>
+<button data-tab="p2p">3 · P2P Transfer</button>
+</nav></header>
+<main>
+
+<section id="audit" class="active">
+<div class="card"><h2>Digital Footprint Analyzer</h2>
+<p class="muted">Enter an email or a username. <b>Privacy notice:</b> the identifier is sent to this server, which forwards it to live public sources (email: XposedOrNot, Gravatar, GitHub, RDAP; username: GitHub, GitLab, Hacker News, Keybase, DEV plus 240+ social/forum/dev sites incl. YouTube, TikTok, X, Twitch, Pinterest, Telegram, Snapchat). Nothing is stored or logged. Only audit identifiers you own.</p>
+<div class="row"><input type="text" id="q" placeholder="you@example.com or @handle"><button class="primary" id="scan">Scan</button></div>
+<div id="auditMsg"></div>
+<div id="aprog" hidden><div class="bar"><div id="abar"></div></div><small id="aprogText" class="muted"></small></div></div>
+<div class="card" id="result" hidden>
+<div class="cols"><div class="gauge">
+<svg viewBox="0 0 200 120"><path d="M20 100 A80 80 0 0 1 180 100" fill="none" stroke="#21262d" stroke-width="16" stroke-linecap="round"/>
+<path id="arc" d="M20 100 A80 80 0 0 1 180 100" fill="none" stroke="#3fb950" stroke-width="16" stroke-linecap="round" pathLength="100" stroke-dasharray="0 100"/></svg>
+<div class="num" id="score">–</div><div id="grade" class="muted"></div></div>
+<div><h3 style="margin-top:0">Summary</h3><div id="summary"></div></div></div>
+<h3>Detailed findings</h3><div class="row" id="sources"></div><div id="manual"></div><div id="findings"></div>
+<div id="planWrap"><h3>Prioritised action plan <small class="muted">(best score gain per effort first)</small></h3><ol id="plan"></ol></div>
+<div class="row"><button class="primary" id="dlHtml">⬇ HTML report</button><button class="ghost" id="dlJson">⬇ JSON</button><button class="ghost" id="printRpt">🖨 Print / PDF</button><button class="ghost" id="saveReport">🔒 Encrypt report in Vault</button></div>
+</div>
+</section>
+
+<section id="vault">
+<div class="card" id="upCard"><h2>Zero-Knowledge Vault</h2>
+<p class="muted">Files are encrypted with AES-256-GCM in your browser. The key lives only in the URL <code>#fragment</code>, which browsers never send to servers.</p>
+<div class="row"><input type="file" id="vfile">
+<label>Expires <select id="ttl"><option value="600000">10 min</option><option value="3600000" selected>1 hour</option><option value="86400000">24 hours</option></select></label>
+<label>Max downloads <select id="maxdl"><option value="0">∞</option><option value="1">1 (burn after read)</option><option value="5">5</option></select></label></div>
+<button class="primary" id="encup">Encrypt & upload</button>
+<div class="bar"><div id="vbar"></div></div><div id="vstatus" class="muted"></div>
+<div id="vout"></div></div>
+<div class="card" id="dlCard" hidden><h2>Encrypted file</h2><div id="dlInfo" class="muted"></div>
+<div class="row"><input type="text" id="manualKey" placeholder="Paste key if missing/invalid" hidden><button class="primary" id="decBtn">Download & decrypt</button></div>
+<div class="bar"><div id="dbar"></div></div><div id="dmsg"></div></div>
+</section>
+
+<section id="p2p">
+<div class="card"><h2>Peer-to-Peer Transfer</h2>
+<p class="muted">Files stream browser-to-browser over a WebRTC data channel. The server only relays connection handshakes, never file data.</p>
+<div class="cols"><div><h3>Host</h3><button class="primary" id="host">Create room</button>
+<div id="hostOut"></div></div>
+<div><h3>Join</h3><div class="row"><input type="text" id="joinCode" maxlength="6" placeholder="6-digit code" inputmode="numeric"><button class="primary" id="join">Join</button></div>
+<div class="row"><button class="ghost" id="scanQr">📷 Scan QR</button></div><video id="cam" hidden playsinline style="width:100%;max-width:260px;border-radius:8px"></video></div></div>
+<div id="pstate" class="msg info"><span class="dot"></span>Not connected</div></div>
+<div class="card" id="xfer" hidden><h3>Transfer</h3>
+<div class="row"><input type="file" id="pfile"><button class="primary" id="psend" disabled>Send</button><button class="ghost" id="leave">Disconnect</button></div>
+<div id="pxfers"></div></div>
+</section>
+</main>
+<script src="qrcode.js"></script><script src="app.js"></script>
+</body></html>
