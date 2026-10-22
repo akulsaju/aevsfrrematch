@@ -1,4 +1,4 @@
-// Zero-dependency server. It stores only opaque ciphertext and relays WebRTC
+﻿// Zero-dependency server. It stores only opaque ciphertext and relays WebRTC
 // signaling messages; it never receives encryption keys or file plaintext.
 const http = require('http');
 const fs = require('fs');
@@ -35,36 +35,7 @@ function readBody(req, limit) {
   });
 }
 
-// Mock public registries. The client sends only a SHA-256 hash of the identifier,
-// so the raw email/handle never leaves the browser; results are deterministic.
-const SOURCES = [
-  { id: 'breach-db', name: 'MockBreach Database', type: 'Data breach', severity: 30, detail: 'Credentials found in a leaked dataset (hashed passwords + email).', fix: 'Change the password everywhere it was reused, enable a password manager and 2FA.' },
-  { id: 'broker', name: 'PeopleFinderMock (data broker)', type: 'Data broker', severity: 22, detail: 'Profile listing name, city and age range.', fix: 'Submit an opt-out request at the broker\'s "Do not sell/Remove my info" page and confirm via email.' },
-  { id: 'social', name: 'SocialGraph public profile', type: 'Social media', severity: 14, detail: 'Public profile indexable by search engines.', fix: 'Set the profile to private and disable "Allow search engines to link to your profile".' },
-  { id: 'paste', name: 'PasteDump archive', type: 'Paste site', severity: 25, detail: 'Identifier appears in a public text paste.', fix: 'Request removal via the paste site abuse form and rotate any exposed secrets.' },
-  { id: 'whois', name: 'WHOIS registry', type: 'Domain registry', severity: 12, detail: 'Contact details visible in domain registration.', fix: 'Enable WHOIS privacy/proxy service with your registrar.' },
-  { id: 'code', name: 'CodeHub commit history', type: 'Code hosting', severity: 10, detail: 'Email present in public commit metadata.', fix: 'Use the no-reply commit address and rewrite history for sensitive repos.' },
-  { id: 'forum', name: 'OldForum archive', type: 'Forum', severity: 8, detail: 'Legacy forum account with public post history.', fix: 'Delete the account or request GDPR/CCPA erasure from the forum admin.' },
-];
-
-const DETAILS = {
-  'breach-db': { exposed: ['Email address', 'Password hash', 'IP address', 'Username'], effort: 'Medium', time: '15-30 min', risk: 'Account takeover, credential stuffing, phishing', steps: ['Check the breach notice and note which site leaked.', 'Change that password and any account that reused it.', 'Switch to a password manager with unique 16+ character passwords.', 'Enable app-based or hardware 2FA on email, banking and social accounts.', 'Watch for phishing that references the breached service.'] },
-  broker: { exposed: ['Full name', 'City / region', 'Age range', 'Relatives', 'Phone number'], effort: 'Medium', time: '10-20 min + 7-30 days processing', risk: 'Doxxing, targeted scams, physical-address lookup', steps: ['Open the broker\'s opt-out / "Do not sell my info" page.', 'Search for your listing and copy its profile URL.', 'Submit the removal request with a throwaway email.', 'Confirm via the verification link.', 'Re-check after 30 days; brokers often relist.'] },
-  social: { exposed: ['Display name', 'Profile photo', 'Friends / followers', 'Posts and location tags'], effort: 'Low', time: '5-10 min', risk: 'Social engineering and profiling', steps: ['Open Privacy settings and set the profile to Private / Friends only.', 'Disable search-engine indexing of the profile.', 'Remove old location tags and review tagged photos.', 'Review connected third-party apps and revoke unused ones.'] },
-  paste: { exposed: ['Email address', 'Possible API keys / passwords', 'Associated usernames'], effort: 'High', time: '1-3 hours + days for takedown', risk: 'Leaked secrets and permanent public copies', steps: ['Open the paste and identify every secret it contains.', 'Rotate all exposed passwords, tokens and API keys immediately.', 'File a removal request through the paste site\'s abuse form.', 'Request de-indexing from search engines.', 'Enable breach monitoring for the address.'] },
-  whois: { exposed: ['Registrant name', 'Postal address', 'Phone number', 'Email'], effort: 'Low', time: '5 min', risk: 'Stalking and spam from public domain records', steps: ['Log in to your domain registrar.', 'Enable WHOIS privacy / proxy protection.', 'Replace contact details with a role-based email.', 'Verify with a WHOIS lookup after 24 hours.'] },
-  code: { exposed: ['Commit author email', 'Real name', 'Working timezone / habits'], effort: 'Medium', time: '10-30 min', risk: 'Email harvesting and identity correlation', steps: ['Enable "Keep my email private" in your code-host settings.', 'Set git config user.email to the no-reply address.', 'For sensitive repos, rewrite history (git filter-repo) and force-push.', 'Ask collaborators to re-clone forks.'] },
-  forum: { exposed: ['Username', 'Post history', 'Profile bio', 'Registration email'], effort: 'Low', time: '10 min + admin response time', risk: 'Old posts linkable to your identity', steps: ['Log in (or use password reset) to access the account.', 'Delete or anonymise posts and the bio.', 'Request account erasure under GDPR / CCPA from the admin.', 'Keep a copy of the request for follow-up.'] },
-};
-
-function osint(hash) {
-  const bytes = Buffer.from(hash, 'hex');
-  return SOURCES.filter((_, i) => bytes[i] % 100 < 45).map(s => {
-    const d = DETAILS[s.id];
-    const firstSeen = new Date(Date.UTC(2018, 0, 1) + (bytes[(bytes.length - 1 - SOURCES.indexOf(s)) % bytes.length] * 12 + SOURCES.indexOf(s) * 37) * 86400000);
-    return { ...s, ...d, level: s.severity >= 25 ? 'Critical' : s.severity >= 15 ? 'High' : s.severity >= 10 ? 'Medium' : 'Low', firstSeen: firstSeen.toISOString().slice(0, 10), reference: `MOCK-${s.id.toUpperCase()}-${hash.slice(0, 8)}` };
-  });
-}
+const { scan } = require('./registries');
 
 function cleanup() {
   const now = Date.now();
@@ -80,11 +51,11 @@ async function api(req, res, url) {
   const parts = url.pathname.split('/').filter(Boolean); // ['api', ...]
   const [, a, b, c] = parts;
 
-  if (a === 'osint' && req.method === 'GET') {
-    const h = url.searchParams.get('h') || '';
-    if (!/^[0-9a-f]{64}$/.test(h)) return json(res, 400, { error: 'Invalid identifier hash' });
-    await new Promise(r => setTimeout(r, 600)); // simulate registry latency
-    return json(res, 200, { findings: osint(h) });
+  if (a === 'osint' && req.method === 'POST') {
+    let body;
+    try { body = JSON.parse((await readBody(req, 2048)).toString()); } catch { return json(res, 400, { error: 'Bad request' }); }
+    try { return json(res, 200, await scan(body.q)); }
+    catch (e) { return json(res, e.status || 502, { error: e.message }); }
   }
 
   if (a === 'vault') {

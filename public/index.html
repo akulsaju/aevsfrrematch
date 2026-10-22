@@ -13,7 +13,7 @@
 
 <section id="audit" class="active">
 <div class="card"><h2>Digital Footprint Analyzer</h2>
-<p class="muted">Enter an email or handle. Only a SHA-256 hash is sent to the mock registries; your identifier never leaves the browser.</p>
+<p class="muted">Enter an email or a username. <b>Privacy notice:</b> the identifier is sent to this server, which forwards it to live public sources (email: XposedOrNot, Gravatar, GitHub, RDAP; username: GitHub, GitLab, Hacker News, Keybase, DEV). Nothing is stored or logged. Only audit identifiers you own.</p>
 <div class="row"><input type="text" id="q" placeholder="you@example.com or @handle"><button class="primary" id="scan">Scan</button></div>
 <div id="auditMsg"></div></div>
 <div class="card" id="result" hidden>
@@ -22,7 +22,7 @@
 <path id="arc" d="M20 100 A80 80 0 0 1 180 100" fill="none" stroke="#3fb950" stroke-width="16" stroke-linecap="round" pathLength="100" stroke-dasharray="0 100"/></svg>
 <div class="num" id="score">–</div><div id="grade" class="muted"></div></div>
 <div><h3 style="margin-top:0">Summary</h3><div id="summary"></div></div></div>
-<h3>Detailed findings</h3><div id="findings"></div>
+<h3>Detailed findings</h3><div class="row" id="sources"></div><div id="findings"></div>
 <div id="planWrap"><h3>Prioritised action plan <small class="muted">(best score gain per effort first)</small></h3><ol id="plan"></ol></div>
 <div class="row"><button class="primary" id="dlHtml">⬇ HTML report</button><button class="ghost" id="dlJson">⬇ JSON</button><button class="ghost" id="printRpt">🖨 Print / PDF</button><button class="ghost" id="saveReport">🔒 Encrypt report in Vault</button></div>
 </div>

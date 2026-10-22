@@ -20,13 +20,14 @@ $('scan').onclick = async () => {
   const q = $('q').value.trim().toLowerCase();
   if (!q) return msg($('auditMsg'), 'Enter an email or handle first.', 'err');
   $('scan').disabled = true; $('result').hidden = true;
-  msg($('auditMsg'), 'Querying public registries…');
+  msg($('auditMsg'), 'Querying live public registries…');
   try {
-    const h = [...new Uint8Array(await crypto.subtle.digest('SHA-256', enc.encode(q)))].map(b => b.toString(16).padStart(2, '0')).join('');
-    const r = await fetch('/api/osint?h=' + h);
-    if (!r.ok) throw new Error((await r.json()).error || 'Registry error');
-    renderAudit(q, (await r.json()).findings);
-    msg($('auditMsg'), '');
+    const r = await fetch('/api/osint', { method: 'POST', body: JSON.stringify({ q }) });
+    const data = await r.json().catch(() => ({}));
+    if (!r.ok) throw new Error(data.error || 'Registry error');
+    renderAudit(q, data.findings, data.sources);
+    const down = data.sources.filter(s => !s.ok);
+    msg($('auditMsg'), down.length ? `Partial results: ${down.map(s => `${s.name} (${s.error})`).join(', ')} unavailable. Score may be understated; retry later.` : '', 'err');
   } catch (e) {
     msg($('auditMsg'), 'Scan failed: ' + (e.message === 'Failed to fetch' ? 'network unreachable. Check your connection and retry.' : e.message), 'err');
   } finally { $('scan').disabled = false; }
@@ -37,7 +38,7 @@ const LEVEL_COLOR = { Critical: '#f85149', High: '#d29922', Medium: '#2f81f7', L
 const EFFORT_RANK = { Low: 0, Medium: 1, High: 2 };
 let lastData = null;
 
-function buildReport(q, findings) {
+function buildReport(q, findings, sources) {
   const score = Math.max(0, 100 - findings.reduce((s, f) => s + f.severity, 0));
   const byLevel = {}; findings.forEach(f => byLevel[f.level] = (byLevel[f.level] || 0) + 1);
   const exposed = [...new Set(findings.flatMap(f => f.exposed))];
@@ -45,19 +46,19 @@ function buildReport(q, findings) {
   const plan = [...findings].sort((a, b) => (b.severity / (EFFORT_RANK[b.effort] + 1)) - (a.severity / (EFFORT_RANK[a.effort] + 1)));
   const potential = Math.min(100, score + findings.reduce((s, f) => s + f.severity, 0));
   return {
-    generatedAt: new Date().toISOString(), subject: maskId(q), score, potentialScore: potential,
+    generatedAt: new Date().toISOString(), subject: maskId(q), score, potentialScore: potential, sourcesChecked: sources,
     rating: score >= 75 ? 'Low exposure' : score >= 45 ? 'Moderate exposure' : 'High exposure',
     summary: { totalFindings: findings.length, byLevel, dataTypesExposed: exposed },
     findings: [...findings].sort((a, b) => b.severity - a.severity),
     actionPlan: plan.map((f, i) => ({ priority: i + 1, source: f.name, effort: f.effort, estimatedTime: f.time, pointsRecovered: f.severity, steps: f.steps })),
     general: ['Use unique passwords and a password manager.', 'Enable 2FA everywhere, preferring hardware keys or authenticator apps.', 'Use email aliases for sign-ups.', 'Re-run this audit every 3 months.'],
-    note: 'Results come from simulated mock registries for demonstration. The raw identifier was never transmitted; only its SHA-256 hash.'
+    note: 'Results come from live public sources (XposedOrNot, Gravatar, GitHub, RDAP, GitLab, Hacker News, Keybase, DEV). Absence of a finding does not prove absence of exposure.'
   };
 }
 function reportHtml(r) {
   const rows = r.findings.map(f => `<h3>${esc(f.name)} <span style="color:${LEVEL_COLOR[f.level]}">[${esc(f.level)}]</span></h3>
 <p><b>Category:</b> ${esc(f.type)} · <b>First seen:</b> ${esc(f.firstSeen)} · <b>Impact:</b> −${f.severity} pts · <b>Ref:</b> ${esc(f.reference)}</p>
-<p>${esc(f.detail)}</p><p><b>Data exposed:</b> ${f.exposed.map(esc).join(', ')}</p><p><b>Risk:</b> ${esc(f.risk)}</p>
+<p>${esc(f.detail)}</p><p><b>Source:</b> ${esc(f.source)} · <a href="${esc(f.url)}">${esc(f.url)}</a></p><p><b>Data exposed:</b> ${f.exposed.map(esc).join(', ')}</p>${f.items ? `<ul>${f.items.map(i => `<li>${esc(i.name)} ${esc(i.date || '')} - ${esc(i.data)}</li>`).join('')}</ul>` : ''}<p><b>Risk:</b> ${esc(f.risk)}</p>
 <p><b>Removal (effort ${esc(f.effort)}, ~${esc(f.time)}):</b></p><ol>${f.steps.map(s => `<li>${esc(s)}</li>`).join('')}</ol>`).join('');
   const plan = r.actionPlan.map(p => `<tr><td>${p.priority}</td><td>${esc(p.source)}</td><td>${esc(p.effort)}</td><td>${esc(p.estimatedTime)}</td><td>+${p.pointsRecovered}</td></tr>`).join('');
   return `<!doctype html><meta charset="utf-8"><title>Privacy report</title><style>body{font:15px/1.5 system-ui;max-width:800px;margin:30px auto;padding:0 16px}table{border-collapse:collapse;width:100%}td,th{border:1px solid #ccc;padding:6px;text-align:left}</style>
@@ -69,8 +70,8 @@ function reportHtml(r) {
 }
 function el(tag, cls, text) { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
 
-function renderAudit(q, findings) {
-  const r = buildReport(q, findings); lastData = r;
+function renderAudit(q, findings, sources = []) {
+  const r = buildReport(q, findings, sources); lastData = r;
   const color = r.score >= 75 ? '#3fb950' : r.score >= 45 ? '#d29922' : '#f85149';
   $('result').hidden = false;
   $('arc').style.stroke = color; $('arc').setAttribute('stroke-dasharray', `${r.score} 100`);
@@ -88,12 +89,16 @@ function renderAudit(q, findings) {
   r.findings.forEach(f => {
     const d = el('details', 'finding'); d.style.borderLeftColor = LEVEL_COLOR[f.level]; d.open = f.level === 'Critical';
     const sm = el('summary'); sm.append(el('strong', null, f.name), el('small', null, ` · ${f.level} · −${f.severity} pts`));
-    const meta = el('small', 'muted', `${f.type} · first seen ${f.firstSeen} · ref ${f.reference}`);
+    const meta = el('small', 'muted', `${f.type} · source ${f.source} · first seen ${f.firstSeen}`);
     const ol = el('ol'); f.steps.forEach(s => ol.append(el('li', null, s)));
-    d.append(sm, meta, el('div', null, f.detail), el('div', null, 'Data exposed: ' + f.exposed.join(', ')), el('div', null, 'Risk: ' + f.risk),
-      el('div', 'fix', `Removal steps (effort ${f.effort}, ~${f.time}):`), ol);
+    d.append(sm, meta, el('div', null, f.detail), el('div', null, 'Data exposed: ' + f.exposed.join(', ')), el('div', null, 'Risk: ' + f.risk));
+    if (f.url && /^https:\/\//.test(f.url)) { const a = el('a', null, 'View source ↗'); a.href = f.url; a.target = '_blank'; a.rel = 'noopener noreferrer'; d.append(a); }
+    if (f.items) { const ul = el('ul'); f.items.forEach(i => ul.append(el('li', null, `${i.name}${i.date ? ' (' + i.date + ')' : ''} — ${i.data}`))); d.append(el('div', 'muted', 'Breaches:'), ul); }
+    d.append(el('div', 'fix', `Removal steps (effort ${f.effort}, ~${f.time}):`), ol);
     box.append(d);
   });
+  const st = $('sources'); st.innerHTML = '';
+  sources.forEach(s => st.append(el('span', 'chip', (s.ok ? '✓ ' : '✗ ') + s.name + (s.ok ? ` (${s.hits})` : ''))));
   const plan = $('plan'); plan.innerHTML = '';
   r.actionPlan.forEach(p => plan.append(el('li', null, `${p.source}: ${p.effort} effort, ~${p.estimatedTime}, +${p.pointsRecovered} pts`)));
   $('planWrap').hidden = !r.actionPlan.length;
