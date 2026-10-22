@@ -295,7 +295,9 @@ $('decBtn').onclick = async () => {
 };
 
 /* ---------- 3. P2P transfer over WebRTC ---------- */
-const ICE = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] };
+let ICE = { iceServers: [{ urls: ['stun:stun.l.google.com:19302', 'stun:stun.cloudflare.com:3478'] }], iceCandidatePoolSize: 4 };
+const iceReady = fetch('/api/ice').then(r => r.json()).then(j => { if (j.iceServers) ICE = { iceServers: j.iceServers, iceCandidatePoolSize: 4 }; }).catch(() => { });
+let restartTimer = null;
 const MAX_BUF = 1 << 20, P_CHUNK = 32 * 1024;
 let peerId = crypto.randomUUID(), room = null, es = null, pc = null, dc = null, remote = null, incoming = null, pendingIce = [];
 
@@ -316,7 +318,15 @@ function newPeer() {
   pc.onicecandidate = e => e.candidate && signal({ ice: e.candidate });
   pc.oniceconnectionstatechange = () => {
     const s = pc && pc.iceConnectionState;
-    if (s === 'disconnected') pstate('Connection unstable… waiting to recover', 'bad');
+    if (s === 'connected' || s === 'completed') clearTimeout(restartTimer);
+    if (s === 'disconnected' || s === 'failed') {
+      const p = pc; clearTimeout(restartTimer);
+      restartTimer = setTimeout(async () => {
+        if (pc !== p || !['disconnected', 'failed'].includes(p.iceConnectionState) || !p.localDescription || p.localDescription.type !== 'offer') return;
+        try { await p.setLocalDescription(await p.createOffer({ iceRestart: true })); signal({ sdp: p.localDescription }); } catch { }
+      }, s === 'failed' ? 0 : 2500);
+    }
+    if (s === 'disconnected') pstate('Connection unstable… reconnecting', 'bad');
     if (s === 'failed') { pstate('Connection failed (network drop or NAT). Click Join/Create room to retry.', 'bad'); if (incoming) { incoming.row.status.textContent = 'Aborted: connection lost'; incoming = null; } $('psend').disabled = true; }
     if (s === 'connected' || s === 'completed') pstate('Connected peer-to-peer (direct, encrypted by DTLS)', 'on');
   };
@@ -460,13 +470,14 @@ $('leave').onclick = () => { teardown(false); $('hostOut').innerHTML = ''; pstat
 
 let pollGen = 0;
 async function startOffer(peer) { // existing peer initiates when a newcomer arrives
-  remote = peer; newPeer(); setupChannel(pc.createDataChannel('file'));
+  await iceReady; remote = peer; newPeer(); setupChannel(pc.createDataChannel('file'));
   await pc.setLocalDescription(await pc.createOffer()); signal({ sdp: pc.localDescription });
 }
 async function onSignal(from, data) {
   try {
     if (data.sdp) {
-      if (data.sdp.type === 'offer') { remote = from; newPeer(); }
+      const restart = data.sdp.type === 'offer' && pc && remote === from && pc.signalingState === 'stable';
+      if (data.sdp.type === 'offer' && !restart) { await iceReady; remote = from; newPeer(); }
       await pc.setRemoteDescription(data.sdp);
       for (const c of pendingIce.splice(0)) await pc.addIceCandidate(c);
       if (data.sdp.type === 'offer') { await pc.setLocalDescription(await pc.createAnswer()); signal({ sdp: pc.localDescription }); }
@@ -500,7 +511,7 @@ async function connectRoom(code) {
     } catch {
       if (++fails >= 5) { if (dc && dc.readyState === 'open') return; pstate('Signaling server unreachable. Check your connection and retry.', 'bad'); teardown(false); return; }
     }
-    await new Promise(r => setTimeout(r, 800));
+    await new Promise(r => setTimeout(r, dc && dc.readyState === 'open' ? 2000 : 350));
   }
 }
 $('host').onclick = async () => {
