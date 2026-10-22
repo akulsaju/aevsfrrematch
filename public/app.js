@@ -198,6 +198,12 @@ async function decryptBuffer(buf, key, onProgress) {
   }
   return { meta, blob: new Blob(out, { type: meta.type || 'application/octet-stream' }) };
 }
+const api = (x, fallback) => {
+  let d = {}; try { d = JSON.parse(dec.decode(x.response)); } catch { }
+  if (x.status === 410) throw new Error(d.error || 'This link has expired, was already used, or never existed.');
+  if (x.status !== 200) throw new Error(d.error || fallback + ' (' + x.status + ')');
+  return d;
+};
 const xhr = (method, url, body, onProgress) => new Promise((res, rej) => {
   const x = new XMLHttpRequest(); x.open(method, url); x.responseType = 'arraybuffer';
   const prog = e => e.lengthComputable && onProgress(e.loaded / e.total);
@@ -210,16 +216,22 @@ const xhr = (method, url, body, onProgress) => new Promise((res, rej) => {
 $('encup').onclick = async () => {
   const f = $('vfile').files[0];
   if (!f) return msg($('vout'), 'Choose a file first.', 'err');
-  if (f.size > 49 * 1024 * 1024) return msg($('vout'), 'File too large (max ~49 MB).', 'err');
+  if (f.size > 19 * 1024 * 1024) return msg($('vout'), 'File too large (max ~19 MB). Use P2P transfer for bigger files.', 'err');
   $('encup').disabled = true; msg($('vout'), '');
   try {
     const key = await crypto.subtle.generateKey({ name: 'AES-GCM', length: 256 }, true, ['encrypt']);
     $('vstatus').textContent = 'Encrypting locally…';
     const blob = await encryptFile(f, key, p => $('vbar').style.width = p * 50 + '%');
     $('vstatus').textContent = 'Uploading ciphertext…';
-    const x = await xhr('POST', `/api/vault?ttl=${$('ttl').value}&max=${$('maxdl').value}`, blob, p => $('vbar').style.width = 50 + p * 50 + '%');
-    const r = JSON.parse(dec.decode(x.response));
-    if (x.status !== 200) throw new Error(r.error || 'Upload failed');
+    const PART = 512 * 1024, n = Math.max(1, Math.ceil(blob.size / PART));
+    const r = await api(await xhr('POST', `/api/vault/init?ttl=${$('ttl').value}&max=${$('maxdl').value}&parts=${n}`, null, () => { }), 'Upload failed');
+    try {
+      for (let i = 0; i < n; i++) {
+        await api(await xhr('PUT', `/api/vault/${r.id}/part/${i}?up=${r.up}`, blob.slice(i * PART, (i + 1) * PART), () => { }), 'Upload failed');
+        $('vbar').style.width = 50 + (i + 1) / n * 50 + '%';
+      }
+      await api(await xhr('POST', `/api/vault/${r.id}/finish?up=${r.up}`, null, () => { }), 'Upload failed');
+    } catch (e) { xhr('DELETE', `/api/vault/${r.id}?up=${r.up}`, null, () => { }).catch(() => { }); throw e; }
     const raw = b64u(await crypto.subtle.exportKey('raw', key));
     const link = `${location.origin}/?v=${r.id}#key=${raw}`;
     $('vstatus').textContent = 'Done. The server holds only ciphertext.';
@@ -257,12 +269,17 @@ $('decBtn').onclick = async () => {
       const raw = unb64u(ks); if (raw.length !== 32) throw 0;
       key = await crypto.subtle.importKey('raw', raw, 'AES-GCM', false, ['decrypt']);
     } catch { $('manualKey').hidden = false; manualKeyNeeded = true; throw new Error('Decryption key is missing or malformed.'); }
-    const x = await xhr('GET', '/api/vault/' + encodeURIComponent(vid), null, p => $('dbar').style.width = p * 50 + '%');
-    if (x.status === 410) throw new Error('This link has expired, was already used, or never existed.');
-    if (x.status !== 200) throw new Error('Server error (' + x.status + ').');
+    const info = await api(await xhr('GET', `/api/vault/${encodeURIComponent(vid)}/meta`, null, () => { }), 'Server error');
+    const bufs = [];
+    for (let i = 0; i < info.parts; i++) {
+      const x = await xhr('GET', `/api/vault/${encodeURIComponent(vid)}/part/${i}?t=${info.token}`, null, () => { });
+      if (x.status !== 200) api(x, 'Server error');
+      bufs.push(x.response);
+      $('dbar').style.width = (i + 1) / info.parts * 50 + '%';
+    }
     msg($('dmsg'), 'Decrypting…');
     let res;
-    try { res = await decryptBuffer(x.response, key, p => $('dbar').style.width = 50 + p * 50 + '%'); }
+    try { res = await decryptBuffer(await new Blob(bufs).arrayBuffer(), key, p => $('dbar').style.width = 50 + p * 50 + '%'); }
     catch (e) {
       if (e.name === 'OperationError') { $('manualKey').hidden = false; manualKeyNeeded = true; throw new Error('Invalid decryption key. The file could not be decrypted (wrong key or tampered data).'); }
       throw e;
@@ -283,9 +300,13 @@ const signal = data => fetch(`/api/rooms/${room}/signal`, { method: 'POST', body
 
 function teardown(keepRoom) {
   dc && dc.close(); pc && pc.close(); dc = pc = remote = null; pendingIce = [];
-  if (!keepRoom) { es && es.close(); es = null; room = null; $('xfer').hidden = true; }
+  if (!keepRoom) {
+    if (room) navigator.sendBeacon(`/api/rooms/${room}/leave`, JSON.stringify({ peer: peerId }));
+    pollGen++; es = null; room = null; $('xfer').hidden = true;
+  }
   $('psend').disabled = true;
 }
+addEventListener('pagehide', () => { if (room) navigator.sendBeacon(`/api/rooms/${room}/leave`, JSON.stringify({ peer: peerId })); });
 function newPeer() {
   pc = new RTCPeerConnection(ICE);
   pc.onicecandidate = e => e.candidate && signal({ ice: e.candidate });
@@ -347,29 +368,50 @@ $('psend').onclick = async () => {
 };
 $('leave').onclick = () => { teardown(false); $('hostOut').innerHTML = ''; pstate('Disconnected'); };
 
-function connectRoom(code) {
+let pollGen = 0;
+async function startOffer(peer) { // existing peer initiates when a newcomer arrives
+  remote = peer; newPeer(); setupChannel(pc.createDataChannel('file'));
+  await pc.setLocalDescription(await pc.createOffer()); signal({ sdp: pc.localDescription });
+}
+async function onSignal(from, data) {
+  try {
+    if (data.sdp) {
+      if (data.sdp.type === 'offer') { remote = from; newPeer(); }
+      await pc.setRemoteDescription(data.sdp);
+      for (const c of pendingIce.splice(0)) await pc.addIceCandidate(c);
+      if (data.sdp.type === 'offer') { await pc.setLocalDescription(await pc.createAnswer()); signal({ sdp: pc.localDescription }); }
+    } else if (data.ice) {
+      if (pc && pc.remoteDescription) await pc.addIceCandidate(data.ice); else pendingIce.push(data.ice);
+    }
+  } catch { pstate('Handshake failed. Disconnect and retry.', 'bad'); }
+}
+async function connectRoom(code) {
   teardown(false); room = code; peerId = crypto.randomUUID();
-  es = new EventSource(`/api/rooms/${code}/events?peer=${peerId}`);
-  es.addEventListener('hello', e => { pstate(JSON.parse(e.data).peers.length ? 'Peer found, negotiating…' : 'Waiting for peer… share the code'); });
-  es.addEventListener('peer', async e => { // existing peer initiates when a newcomer arrives
-    remote = JSON.parse(e.data).peer; newPeer(); setupChannel(pc.createDataChannel('file'));
-    await pc.setLocalDescription(await pc.createOffer()); signal({ sdp: pc.localDescription });
-  });
-  es.addEventListener('signal', async e => {
-    const { from, data } = JSON.parse(e.data);
+  const gen = ++pollGen;
+  let j;
+  try {
+    const r = await fetch(`/api/rooms/${code}/join`, { method: 'POST', body: JSON.stringify({ peer: peerId }) });
+    j = await r.json();
+    if (!r.ok) { pstate(j.error || 'Could not join room.', 'bad'); room = null; return; }
+  } catch { pstate('Could not reach the server.', 'bad'); room = null; return; }
+  pstate(j.peers.length ? 'Peer found, negotiating…' : 'Waiting for peer… share the code');
+  let after = 0, fails = 0;
+  while (gen === pollGen) {
     try {
-      if (data.sdp) {
-        if (data.sdp.type === 'offer') { remote = from; newPeer(); }
-        await pc.setRemoteDescription(data.sdp);
-        for (const c of pendingIce.splice(0)) await pc.addIceCandidate(c);
-        if (data.sdp.type === 'offer') { await pc.setLocalDescription(await pc.createAnswer()); signal({ sdp: pc.localDescription }); }
-      } else if (data.ice) {
-        if (pc && pc.remoteDescription) await pc.addIceCandidate(data.ice); else pendingIce.push(data.ice);
+      const r = await fetch(`/api/rooms/${code}/poll?peer=${peerId}&after=${after}`);
+      if (gen !== pollGen) return;
+      if (r.status === 404) { pstate('Room closed or expired.', 'bad'); teardown(false); return; }
+      const d = await r.json(); fails = 0; after = d.next;
+      for (const m of d.msgs) {
+        if (m.t === 'peer') await startOffer(m.peer);
+        else if (m.t === 'signal') await onSignal(m.from, m.data);
+        else if (m.t === 'left') { pstate('Peer left the room.', 'bad'); $('psend').disabled = true; }
       }
-    } catch { pstate('Handshake failed. Disconnect and retry.', 'bad'); }
-  });
-  es.addEventListener('left', () => { pstate('Peer left the room.', 'bad'); $('psend').disabled = true; });
-  es.onerror = () => { if (es && es.readyState === 2) { pstate('Room closed, expired, full, or server unreachable.', 'bad'); teardown(false); } };
+    } catch {
+      if (++fails >= 5) { pstate('Signaling server unreachable. Check your connection and retry.', 'bad'); teardown(false); return; }
+    }
+    await new Promise(r => setTimeout(r, 800));
+  }
 }
 $('host').onclick = async () => {
   try {

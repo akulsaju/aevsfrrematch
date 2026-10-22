@@ -54,8 +54,10 @@ const MANUAL = [
 async function scanUsername(username, onProgress) {
   const sites = loadSites();
   let done = 0;
-  const res = await pool(sites, 50, async s => {
-    const status = await checkSite(s, username);
+  const deadline = Date.now() + (parseInt(process.env.SCAN_DEADLINE_MS) || 48000);
+  const res = await pool(sites, 60, async s => {
+    const left = deadline - Date.now();
+    const status = left < 1500 ? 'unknown' : await checkSite(s, username, Math.min(7000, left));
     onProgress && onProgress(++done, sites.length, status === 'found' ? s : null);
     return { site: s, status };
   });

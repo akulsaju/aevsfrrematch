@@ -9,3 +9,12 @@ All-in-one privacy suite (no npm dependencies; Node 18+). Run `npm start` then o
 Integration: save the audit report into the Vault; send a vault file via P2P. A public STUN server is used; strict NATs may need TURN.
 
 Username scans also check ~240 sites (YouTube, TikTok, X, Twitch, Pinterest, Telegram, Snapchat, ...) via profile-URL checks. Site definitions come from the MIT-licensed Sherlock project and are filtered by `node tools/validate-sites.js <sherlock data.json>`, which keeps only sites that correctly distinguish an existing from a nonexistent user. Instagram, Facebook, Reddit, Threads, LinkedIn and Spotify require login to check, so the report gives manual-check links instead of guessing.
+
+## Deploying on Vercel
+
+public/ is served statically and pi/[...path].js (sharing lib/api.js with the local server.js) serves the API. Vercel functions are stateless, so the vault and P2P signaling use Upstash Redis (REST):
+
+1. Add the Upstash Redis integration (or set UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN; KV_REST_API_URL/KV_REST_API_TOKEN also work) in the Vercel project settings.
+2. Deploy the branch that contains this code (merge it to your production branch, normally main).
+
+Without those variables the app uses an in-memory store (fine locally, not on Vercel). On Vercel the vault is chunked (about 19 MB max, 512 KB parts), P2P signaling uses polling, and username scans stop after about 48 s (unchecked sites show as unknown). Rooms expire after 10 minutes. Some sites may block Vercel datacenter IPs more than home IPs.
