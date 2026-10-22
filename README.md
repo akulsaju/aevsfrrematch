@@ -12,9 +12,9 @@ Username scans also check ~240 sites (YouTube, TikTok, X, Twitch, Pinterest, Tel
 
 ## Deploying on Vercel
 
-public/ is served statically and pi/[...path].js (sharing lib/api.js with the local server.js) serves the API. Vercel functions are stateless, so the vault and P2P signaling use Upstash Redis (REST):
+public/ is served statically and api/[...path].js (sharing lib/api.js with the local server.js) serves the API. Vercel functions are stateless, so the vault and P2P signaling use Redis:
 
-1. Add the Upstash Redis integration (or set UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN; KV_REST_API_URL/KV_REST_API_TOKEN also work) in the Vercel project settings.
+1. Set `REDIS_URL` (any Redis, e.g. redis://default:password@host:port) in the Vercel project settings, or add the Upstash integration (or set UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN; KV_REST_API_URL/KV_REST_API_TOKEN also work) in the Vercel project settings.
 2. Deploy the branch that contains this code (merge it to your production branch, normally main).
 
 Without those variables the app uses an in-memory store (fine locally, not on Vercel). On Vercel the vault is chunked (about 19 MB max, 512 KB parts), P2P signaling uses polling, and username scans stop after about 48 s (unchecked sites show as unknown). Rooms stay open for 1 hour. Some sites may block Vercel datacenter IPs more than home IPs.

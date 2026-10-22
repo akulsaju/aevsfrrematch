@@ -2,6 +2,11 @@
   "name": "privacy-suite",
   "version": "1.0.0",
   "description": "OSINT audit, zero-knowledge vault and P2P transfer",
-  "scripts": { "start": "node server.js" },
-  "license": "MIT"
+  "scripts": {
+    "start": "node server.js"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "redis": "^4.7.1"
+  }
 }
