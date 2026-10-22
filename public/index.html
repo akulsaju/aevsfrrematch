@@ -3,13 +3,16 @@
 <meta name="referrer" content="no-referrer">
 <title>PrivacyShield – Audit, Vault, Transfer</title><link rel="stylesheet" href="style.css"></head>
 <body>
-<header><h1>🛡️ PrivacyShield</h1>
+<header><h1 class="brand"><span class="logo">🛡️</span>PrivacyShield</h1>
 <nav id="nav">
-<button data-tab="audit" class="active">1 · Audit</button>
-<button data-tab="vault">2 · Vault</button>
-<button data-tab="p2p">3 · P2P Transfer</button>
+<button data-tab="audit" class="active"><span class="n">1</span><span class="t">Audit</span></button>
+<button data-tab="vault"><span class="n">2</span><span class="t">Vault</span></button>
+<button data-tab="p2p"><span class="n">3</span><span class="t">P2P Transfer</span></button>
 </nav></header>
 <main>
+<div class="hero"><h2>Audit it. <span>Lock it.</span> Send it directly.</h2>
+<p>Check your digital exposure, store files with zero-knowledge encryption, and transfer them peer-to-peer, all in one place.</p>
+<div class="badges"><span>🔍 240+ live sources</span><span>🔐 AES-256-GCM, keys never leave your browser</span><span>⚡ WebRTC direct transfer</span></div></div>
 
 <section id="audit" class="active">
 <div class="card"><h2>Digital Footprint Analyzer</h2>
@@ -56,5 +59,6 @@
 <div id="pxfers"></div></div>
 </section>
 </main>
+<footer>Encryption happens in your browser. The server never sees keys or plaintext.</footer>
 <script src="qrcode.js"></script><script src="app.js"></script>
 </body></html>

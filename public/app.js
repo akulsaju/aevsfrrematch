@@ -12,7 +12,7 @@ function show(tab) {
   document.querySelectorAll('section').forEach(s => s.classList.toggle('active', s.id === tab));
   document.querySelectorAll('nav button').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
 }
-$('nav').onclick = e => e.target.dataset.tab && show(e.target.dataset.tab);
+$('nav').onclick = e => { const b = e.target.closest('button[data-tab]'); b && show(b.dataset.tab); };
 
 /* ---------- 1. OSINT audit ---------- */
 let lastReport = null;
