@@ -21,8 +21,10 @@
 <svg viewBox="0 0 200 120"><path d="M20 100 A80 80 0 0 1 180 100" fill="none" stroke="#21262d" stroke-width="16" stroke-linecap="round"/>
 <path id="arc" d="M20 100 A80 80 0 0 1 180 100" fill="none" stroke="#3fb950" stroke-width="16" stroke-linecap="round" pathLength="100" stroke-dasharray="0 100"/></svg>
 <div class="num" id="score">–</div><div id="grade" class="muted"></div></div>
-<div><h3 style="margin-top:0">Findings & removal steps</h3><div id="findings"></div></div></div>
-<div class="row"><button class="ghost" id="saveReport">🔒 Encrypt report in Vault</button></div>
+<div><h3 style="margin-top:0">Summary</h3><div id="summary"></div></div></div>
+<h3>Detailed findings</h3><div id="findings"></div>
+<div id="planWrap"><h3>Prioritised action plan <small class="muted">(best score gain per effort first)</small></h3><ol id="plan"></ol></div>
+<div class="row"><button class="primary" id="dlHtml">⬇ HTML report</button><button class="ghost" id="dlJson">⬇ JSON</button><button class="ghost" id="printRpt">🖨 Print / PDF</button><button class="ghost" id="saveReport">🔒 Encrypt report in Vault</button></div>
 </div>
 </section>
 

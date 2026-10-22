@@ -31,25 +31,78 @@ $('scan').onclick = async () => {
     msg($('auditMsg'), 'Scan failed: ' + (e.message === 'Failed to fetch' ? 'network unreachable. Check your connection and retry.' : e.message), 'err');
   } finally { $('scan').disabled = false; }
 };
-function renderAudit(q, findings) {
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const maskId = q => q.includes('@') ? q.replace(/^(.).*(@.*)$/, '$1***$2') : q.replace(/^(@?.).*(.)$/, '$1***$2');
+const LEVEL_COLOR = { Critical: '#f85149', High: '#d29922', Medium: '#2f81f7', Low: '#8b949e' };
+const EFFORT_RANK = { Low: 0, Medium: 1, High: 2 };
+let lastData = null;
+
+function buildReport(q, findings) {
   const score = Math.max(0, 100 - findings.reduce((s, f) => s + f.severity, 0));
-  const color = score >= 75 ? '#3fb950' : score >= 45 ? '#d29922' : '#f85149';
-  $('result').hidden = false;
-  $('arc').style.stroke = color; $('arc').setAttribute('stroke-dasharray', `${score} 100`);
-  $('score').textContent = score; $('score').style.color = color;
-  $('grade').textContent = score >= 75 ? 'Low exposure' : score >= 45 ? 'Moderate exposure' : 'High exposure';
-  const box = $('findings'); box.innerHTML = '';
-  if (!findings.length) box.textContent = 'No public exposure found. 🎉';
-  findings.sort((a, b) => b.severity - a.severity).forEach(f => {
-    const d = document.createElement('div'); d.className = 'finding';
-    const t = document.createElement('strong'); t.textContent = f.name;
-    const s = document.createElement('small'); s.textContent = ` · ${f.type} · −${f.severity} pts`;
-    const p = document.createElement('div'); p.textContent = f.detail;
-    const x = document.createElement('div'); x.className = 'fix'; x.textContent = '➜ ' + f.fix;
-    d.append(t, s, p, x); box.append(d);
-  });
-  lastReport = new File([JSON.stringify({ identifierHash: 'omitted', score, scannedAt: new Date().toISOString(), findings }, null, 2)], 'privacy-report.json', { type: 'application/json' });
+  const byLevel = {}; findings.forEach(f => byLevel[f.level] = (byLevel[f.level] || 0) + 1);
+  const exposed = [...new Set(findings.flatMap(f => f.exposed))];
+  // Highest points recovered per effort goes first.
+  const plan = [...findings].sort((a, b) => (b.severity / (EFFORT_RANK[b.effort] + 1)) - (a.severity / (EFFORT_RANK[a.effort] + 1)));
+  const potential = Math.min(100, score + findings.reduce((s, f) => s + f.severity, 0));
+  return {
+    generatedAt: new Date().toISOString(), subject: maskId(q), score, potentialScore: potential,
+    rating: score >= 75 ? 'Low exposure' : score >= 45 ? 'Moderate exposure' : 'High exposure',
+    summary: { totalFindings: findings.length, byLevel, dataTypesExposed: exposed },
+    findings: [...findings].sort((a, b) => b.severity - a.severity),
+    actionPlan: plan.map((f, i) => ({ priority: i + 1, source: f.name, effort: f.effort, estimatedTime: f.time, pointsRecovered: f.severity, steps: f.steps })),
+    general: ['Use unique passwords and a password manager.', 'Enable 2FA everywhere, preferring hardware keys or authenticator apps.', 'Use email aliases for sign-ups.', 'Re-run this audit every 3 months.'],
+    note: 'Results come from simulated mock registries for demonstration. The raw identifier was never transmitted; only its SHA-256 hash.'
+  };
 }
+function reportHtml(r) {
+  const rows = r.findings.map(f => `<h3>${esc(f.name)} <span style="color:${LEVEL_COLOR[f.level]}">[${esc(f.level)}]</span></h3>
+<p><b>Category:</b> ${esc(f.type)} · <b>First seen:</b> ${esc(f.firstSeen)} · <b>Impact:</b> −${f.severity} pts · <b>Ref:</b> ${esc(f.reference)}</p>
+<p>${esc(f.detail)}</p><p><b>Data exposed:</b> ${f.exposed.map(esc).join(', ')}</p><p><b>Risk:</b> ${esc(f.risk)}</p>
+<p><b>Removal (effort ${esc(f.effort)}, ~${esc(f.time)}):</b></p><ol>${f.steps.map(s => `<li>${esc(s)}</li>`).join('')}</ol>`).join('');
+  const plan = r.actionPlan.map(p => `<tr><td>${p.priority}</td><td>${esc(p.source)}</td><td>${esc(p.effort)}</td><td>${esc(p.estimatedTime)}</td><td>+${p.pointsRecovered}</td></tr>`).join('');
+  return `<!doctype html><meta charset="utf-8"><title>Privacy report</title><style>body{font:15px/1.5 system-ui;max-width:800px;margin:30px auto;padding:0 16px}table{border-collapse:collapse;width:100%}td,th{border:1px solid #ccc;padding:6px;text-align:left}</style>
+<h1>Digital Privacy Report</h1><p>Subject: <b>${esc(r.subject)}</b> · Generated ${esc(r.generatedAt)}</p>
+<h2>Score: ${r.score}/100 (${esc(r.rating)})</h2><p>Potential after remediation: <b>${r.potentialScore}/100</b>. ${r.summary.totalFindings} finding(s): ${Object.entries(r.summary.byLevel).map(([k, v]) => `${v} ${k}`).join(', ') || 'none'}.</p>
+<p><b>Data types exposed:</b> ${r.summary.dataTypesExposed.map(esc).join(', ') || 'none'}</p>
+<h2>Findings</h2>${rows || '<p>No exposure found.</p>'}<h2>Prioritised action plan</h2><table><tr><th>#</th><th>Source</th><th>Effort</th><th>Time</th><th>Score gain</th></tr>${plan}</table>
+<h2>General recommendations</h2><ul>${r.general.map(g => `<li>${esc(g)}</li>`).join('')}</ul><p><i>${esc(r.note)}</i></p>`;
+}
+function el(tag, cls, text) { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+
+function renderAudit(q, findings) {
+  const r = buildReport(q, findings); lastData = r;
+  const color = r.score >= 75 ? '#3fb950' : r.score >= 45 ? '#d29922' : '#f85149';
+  $('result').hidden = false;
+  $('arc').style.stroke = color; $('arc').setAttribute('stroke-dasharray', `${r.score} 100`);
+  $('score').textContent = r.score; $('score').style.color = color;
+  $('grade').textContent = `${r.rating} · potential ${r.potentialScore}/100`;
+  const sum = $('summary'); sum.innerHTML = '';
+  sum.append(el('div', null, `${r.summary.totalFindings} finding(s) for ${r.subject}`));
+  const chips = el('div', 'row');
+  Object.entries(r.summary.byLevel).forEach(([k, v]) => { const c = el('span', 'chip', `${v} ${k}`); c.style.borderColor = LEVEL_COLOR[k]; chips.append(c); });
+  sum.append(chips);
+  if (r.summary.dataTypesExposed.length) sum.append(el('small', 'muted', 'Exposed data: ' + r.summary.dataTypesExposed.join(', ')));
+
+  const box = $('findings'); box.innerHTML = '';
+  if (!r.findings.length) box.textContent = 'No public exposure found. 🎉';
+  r.findings.forEach(f => {
+    const d = el('details', 'finding'); d.style.borderLeftColor = LEVEL_COLOR[f.level]; d.open = f.level === 'Critical';
+    const sm = el('summary'); sm.append(el('strong', null, f.name), el('small', null, ` · ${f.level} · −${f.severity} pts`));
+    const meta = el('small', 'muted', `${f.type} · first seen ${f.firstSeen} · ref ${f.reference}`);
+    const ol = el('ol'); f.steps.forEach(s => ol.append(el('li', null, s)));
+    d.append(sm, meta, el('div', null, f.detail), el('div', null, 'Data exposed: ' + f.exposed.join(', ')), el('div', null, 'Risk: ' + f.risk),
+      el('div', 'fix', `Removal steps (effort ${f.effort}, ~${f.time}):`), ol);
+    box.append(d);
+  });
+  const plan = $('plan'); plan.innerHTML = '';
+  r.actionPlan.forEach(p => plan.append(el('li', null, `${p.source}: ${p.effort} effort, ~${p.estimatedTime}, +${p.pointsRecovered} pts`)));
+  $('planWrap').hidden = !r.actionPlan.length;
+  lastReport = new File([JSON.stringify(r, null, 2)], 'privacy-report.json', { type: 'application/json' });
+}
+const download = (name, type, text) => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([text], { type })); a.download = name; a.click(); };
+$('dlHtml').onclick = () => lastData && download('privacy-report.html', 'text/html', reportHtml(lastData));
+$('dlJson').onclick = () => lastData && download('privacy-report.json', 'application/json', JSON.stringify(lastData, null, 2));
+$('printRpt').onclick = () => { if (!lastData) return; const w = window.open('', '_blank'); if (!w) return msg($('auditMsg'), 'Pop-up blocked; use Download HTML instead.', 'err'); w.document.write(reportHtml(lastData)); w.document.close(); w.print(); };
 $('saveReport').onclick = () => { setFile($('vfile'), lastReport); show('vault'); };
 
 /* ---------- 2. Zero-knowledge vault ---------- */

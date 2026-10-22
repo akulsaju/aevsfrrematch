@@ -47,9 +47,23 @@ const SOURCES = [
   { id: 'forum', name: 'OldForum archive', type: 'Forum', severity: 8, detail: 'Legacy forum account with public post history.', fix: 'Delete the account or request GDPR/CCPA erasure from the forum admin.' },
 ];
 
+const DETAILS = {
+  'breach-db': { exposed: ['Email address', 'Password hash', 'IP address', 'Username'], effort: 'Medium', time: '15-30 min', risk: 'Account takeover, credential stuffing, phishing', steps: ['Check the breach notice and note which site leaked.', 'Change that password and any account that reused it.', 'Switch to a password manager with unique 16+ character passwords.', 'Enable app-based or hardware 2FA on email, banking and social accounts.', 'Watch for phishing that references the breached service.'] },
+  broker: { exposed: ['Full name', 'City / region', 'Age range', 'Relatives', 'Phone number'], effort: 'Medium', time: '10-20 min + 7-30 days processing', risk: 'Doxxing, targeted scams, physical-address lookup', steps: ['Open the broker\'s opt-out / "Do not sell my info" page.', 'Search for your listing and copy its profile URL.', 'Submit the removal request with a throwaway email.', 'Confirm via the verification link.', 'Re-check after 30 days; brokers often relist.'] },
+  social: { exposed: ['Display name', 'Profile photo', 'Friends / followers', 'Posts and location tags'], effort: 'Low', time: '5-10 min', risk: 'Social engineering and profiling', steps: ['Open Privacy settings and set the profile to Private / Friends only.', 'Disable search-engine indexing of the profile.', 'Remove old location tags and review tagged photos.', 'Review connected third-party apps and revoke unused ones.'] },
+  paste: { exposed: ['Email address', 'Possible API keys / passwords', 'Associated usernames'], effort: 'High', time: '1-3 hours + days for takedown', risk: 'Leaked secrets and permanent public copies', steps: ['Open the paste and identify every secret it contains.', 'Rotate all exposed passwords, tokens and API keys immediately.', 'File a removal request through the paste site\'s abuse form.', 'Request de-indexing from search engines.', 'Enable breach monitoring for the address.'] },
+  whois: { exposed: ['Registrant name', 'Postal address', 'Phone number', 'Email'], effort: 'Low', time: '5 min', risk: 'Stalking and spam from public domain records', steps: ['Log in to your domain registrar.', 'Enable WHOIS privacy / proxy protection.', 'Replace contact details with a role-based email.', 'Verify with a WHOIS lookup after 24 hours.'] },
+  code: { exposed: ['Commit author email', 'Real name', 'Working timezone / habits'], effort: 'Medium', time: '10-30 min', risk: 'Email harvesting and identity correlation', steps: ['Enable "Keep my email private" in your code-host settings.', 'Set git config user.email to the no-reply address.', 'For sensitive repos, rewrite history (git filter-repo) and force-push.', 'Ask collaborators to re-clone forks.'] },
+  forum: { exposed: ['Username', 'Post history', 'Profile bio', 'Registration email'], effort: 'Low', time: '10 min + admin response time', risk: 'Old posts linkable to your identity', steps: ['Log in (or use password reset) to access the account.', 'Delete or anonymise posts and the bio.', 'Request account erasure under GDPR / CCPA from the admin.', 'Keep a copy of the request for follow-up.'] },
+};
+
 function osint(hash) {
   const bytes = Buffer.from(hash, 'hex');
-  return SOURCES.filter((_, i) => bytes[i] % 100 < 45).map(s => ({ ...s }));
+  return SOURCES.filter((_, i) => bytes[i] % 100 < 45).map(s => {
+    const d = DETAILS[s.id];
+    const firstSeen = new Date(Date.UTC(2018, 0, 1) + (bytes[(bytes.length - 1 - SOURCES.indexOf(s)) % bytes.length] * 12 + SOURCES.indexOf(s) * 37) * 86400000);
+    return { ...s, ...d, level: s.severity >= 25 ? 'Critical' : s.severity >= 15 ? 'High' : s.severity >= 10 ? 'Medium' : 'Low', firstSeen: firstSeen.toISOString().slice(0, 10), reference: `MOCK-${s.id.toUpperCase()}-${hash.slice(0, 8)}` };
+  });
 }
 
 function cleanup() {
