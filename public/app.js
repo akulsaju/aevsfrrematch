@@ -20,30 +20,39 @@ document.querySelectorAll('.tile').forEach(t => t.onclick = e => { e.preventDefa
 
 /* ---------- 1. OSINT audit ---------- */
 let lastReport = null;
-async function footprintScan(username) {
-  $('aprog').hidden = false; $('aprogText').textContent = 'Checking profiles…';
-  const r = await fetch('/api/footprint', { method: 'POST', body: JSON.stringify({ q: username }) });
+const SHARDS = 8; // each shard is its own serverless call, so thousands of sites fit inside the time limit
+async function footprintShard(username, shard, onMsg) {
+  const r = await fetch('/api/footprint', { method: 'POST', body: JSON.stringify({ q: username, shard, shards: SHARDS }) });
   if (!r.ok) throw new Error((await r.json().catch(() => ({}))).error || 'Footprint scan failed');
-  const reader = r.body.getReader(), td = new TextDecoder(); let buf = '', hits = [], fin = null, last = { done: 0, total: 0 };
+  const reader = r.body.getReader(), td = new TextDecoder(); let buf = '', fin = null;
   for (;;) {
     const { value, done } = await reader.read(); if (done) break;
     buf += td.decode(value, { stream: true });
     let i; while ((i = buf.indexOf('\n')) >= 0) {
       const l = buf.slice(0, i); buf = buf.slice(i + 1); if (!l) continue;
       const m = JSON.parse(l);
-      if (m.final) fin = m;
-      else {
-        last = m; if (m.hit) hits.push(m.hit);
-        $('abar').style.width = (m.done / m.total * 100) + '%';
-        $('aprogText').textContent = `Checked ${m.done}/${m.total} sites · ${hits.length} profile(s) found`;
-      }
+      if (m.final) fin = m; else onMsg(m);
     }
   }
-  if (!fin) throw new Error('Footprint scan was interrupted (network drop). Retry.');
-  hits.sort((a, b) => a.name.localeCompare(b.name));
-  return { hits, total: fin.total, checked: fin.total - fin.unknown, unknown: fin.unknown, manual: fin.manual };
+  if (!fin) throw new Error('interrupted');
+  return fin;
 }
-function footprintFinding(hits, checked) {
+async function footprintScan(username) {
+  $('aprog').hidden = false; $('aprogText').textContent = 'Checking profiles…';
+  const hits = [], prog = new Array(SHARDS).fill(null).map(() => ({ done: 0, total: 0 }));
+  const paint = () => {
+    const done = prog.reduce((a, p) => a + p.done, 0), total = prog.reduce((a, p) => a + p.total, 0);
+    $('abar').style.width = (total ? done / total * 100 : 0) + '%';
+    $('aprogText').textContent = `Checked ${done}/${total || '…'} sites · ${hits.length} profile(s) found`;
+  };
+  const fins = await Promise.all(prog.map((p, s) => footprintShard(username, s, m => { p.done = m.done; p.total = m.total; if (m.hit) hits.push(m.hit); paint(); }).catch(e => ({ failed: e, total: p.total }))));
+  const ok = fins.filter(f => !f.failed);
+  if (!ok.length) throw new Error('Footprint scan failed' + (fins[0].failed && fins[0].failed.message !== 'interrupted' ? ': ' + fins[0].failed.message : ' (network drop). Retry.'));
+  const total = fins.reduce((a, f) => a + (f.total || 0), 0);
+  const unknown = ok.reduce((a, f) => a + f.unknown, 0) + fins.filter(f => f.failed).reduce((a, f) => a + (f.total || 0), 0);
+  hits.sort((a, b) => a.name.localeCompare(b.name));
+  return { hits, total, checked: total - unknown, unknown, manual: ok[0].manual, failedShards: fins.filter(f => f.failed).length };
+}function footprintFinding(hits, checked) {
   const n = hits.length, sev = Math.min(35, Math.round(4 + n * 1.5));
   return {
     id: 'footprint', name: `Username found on ${n} more platform${n === 1 ? '' : 's'}`, type: 'Social footprint', severity: sev,

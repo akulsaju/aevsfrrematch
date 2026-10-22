@@ -3,7 +3,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const SITES_FILES = ['sites.json', 'sites-wmn.json'].map(f => path.join(__dirname, f));
+const SITES_FILES = ['sites.json', 'sites-wmn.json', 'sites-maigret.json'].map(f => path.join(__dirname, f));
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36';
 
 function loadSites() {
@@ -51,8 +51,23 @@ async function checkSite(site, username, timeout = 8000, info = {}) {
     const r = await fetch(url, {
       method: site.method || (site.type === 'status_code' || site.type === 'response_url' ? 'GET' : 'GET'),
       headers: { 'User-Agent': UA, 'Accept-Language': 'en-US,en;q=0.9', ...(site.headers || {}) },
-      redirect: site.type === 'response_url' || (site.type === 'wmn' && (site.ec >= 300 || site.mc >= 300)) ? 'manual' : 'follow', signal: ctl.signal,
+      redirect: site.type === 'response_url' || (site.type === 'mg' && site.ck === 'response_url') || (site.type === 'wmn' && (site.ec >= 300 || site.mc >= 300)) ? 'manual' : 'follow', signal: ctl.signal,
     });
+    if (site.type === 'mg') {
+      const has = (b, arr) => (arr || []).some(x => b.includes(x));
+      if (site.ck === 'status_code') {
+        if (r.status >= 200 && r.status < 300) { try { Object.assign(info, pageInfo((await r.text()).slice(0, 200000))); } catch { } return 'found'; }
+        if (r.status === 404 || r.status === 410 || r.status === 400) return 'missing';
+        return 'unknown';
+      }
+      if (site.ck === 'response_url') return r.status >= 200 && r.status < 300 ? 'found' : r.status >= 300 && r.status < 400 ? 'missing' : 'unknown';
+      if (r.status === 429 || r.status >= 500 || (r.status === 403 && !site.ig403)) return 'unknown';
+      const body = (await r.text()).slice(0, 400000);
+      if (has(body, site.ab)) return 'missing';
+      if (site.pr && !has(body, site.pr)) return 'missing';
+      if (r.status >= 400 && !site.pr) return 'missing';
+      Object.assign(info, pageInfo(body)); return 'found';
+    }
     if (site.type === 'wmn') {
       const body = (await r.text()).slice(0, 400000);
       const missing = r.status === site.mc || (site.ms && body.includes(site.ms));
@@ -90,11 +105,12 @@ const MANUAL = [
   ['Threads', 'https://www.threads.net/@{}'], ['LinkedIn', 'https://www.linkedin.com/in/{}'], ['Spotify', 'https://open.spotify.com/user/{}'],
 ].map(([name, url]) => ({ name, url }));
 
-async function scanUsername(username, onProgress) {
-  const sites = loadSites();
+async function scanUsername(username, onProgress, shard = 0, shards = 1) {
+  const sites = loadSites().filter((_, i) => i % shards === shard);
+  onProgress && onProgress(0, sites.length, null);
   let done = 0;
   const deadline = Date.now() + (parseInt(process.env.SCAN_DEADLINE_MS) || 48000);
-  const res = await pool(sites, 60, async s => {
+  const res = await pool(sites, 30, async s => {
     const left = deadline - Date.now();
     const info = {};
     const status = left < 1500 ? 'unknown' : await checkSite(s, username, Math.min(7000, left), info);
