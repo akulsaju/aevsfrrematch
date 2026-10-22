@@ -1,4 +1,4 @@
-// Local development server. On Vercel, public/ is served statically and api/[...path].js handles the API.
+// Local development server. On Vercel, public/ is served statically and api/index.js handles the API.
 const http = require('http');
 const fs = require('fs');
 const path = require('path');

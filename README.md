@@ -12,7 +12,7 @@ Username scans also check ~410 sites (YouTube, TikTok, X, Twitch, Pinterest, Tel
 
 ## Deploying on Vercel
 
-public/ is served statically and api/[...path].js (sharing lib/api.js with the local server.js) serves the API. Vercel functions are stateless, so the vault and P2P signaling use Redis:
+public/ is served statically and api/index.js (sharing lib/api.js with the local server.js) serves the API. Vercel functions are stateless, so the vault and P2P signaling use Redis:
 
 1. Set `REDIS_URL` (any Redis, e.g. redis://default:password@host:port) in the Vercel project settings, or add the Upstash integration (or set UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN; KV_REST_API_URL/KV_REST_API_TOKEN also work) in the Vercel project settings.
 2. Deploy the branch that contains this code (merge it to your production branch, normally main).
