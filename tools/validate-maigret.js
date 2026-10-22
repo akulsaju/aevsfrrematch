@@ -14,6 +14,7 @@ for (const f of ['sites.json', 'sites-wmn.json']) {
 }
 const SKIP_TAGS = new Set(['porn', 'adult', 'erotic', 'dating-adult']);
 const host = u => { try { return new URL(u).hostname.replace(/^www\./, ''); } catch { return null; } };
+const excludedHosts = new Set(['feminismus.jeannette-hollmann.de']);
 
 const cands = [];
 const seenHost = new Set(existing);
@@ -26,7 +27,7 @@ for (const [name, raw] of Object.entries(src.sites)) {
   const url = fillUrl(s.url);
   if (!/^https?:\/\//.test(url) || !url.includes('{}')) continue;
   const h = host(s.urlMain || url);
-  if (!h || seenHost.has(h)) continue;
+  if (!h || excludedHosts.has(h) || seenHost.has(h)) continue;
   seenHost.add(h);
   const o = { name, url, home: s.urlMain || url.replace('{}', ''), type: 'mg', ck: s.checkType, claimed: s.usernameClaimed, unclaimed: s.usernameUnclaimed };
   if (s.urlProbe) o.probe = fillUrl(s.urlProbe);
