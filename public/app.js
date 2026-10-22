@@ -51,7 +51,7 @@ function footprintFinding(hits, checked) {
     detail: `A profile page exists for this username on ${n} of ${checked} reachable sites. A reused username lets anyone link your accounts together.`,
     exposed: ['Username', 'Public profile pages', 'Cross-platform identity link'], risk: 'Account correlation, doxxing and targeted social engineering',
     effort: 'High', time: `${Math.max(10, n * 5)} min`, firstSeen: 'unknown', source: 'Profile URL checks', url: null,
-    items: hits.map(h => ({ name: h.name, date: '', data: h.url, url: h.url })),
+    items: hits.map(h => ({ name: h.name, date: '', data: '', url: h.url, info: h.info || {} })),
     steps: ['Open each profile below and confirm whether it is yours.', 'Delete accounts you no longer use (search "<site> delete account").', 'For accounts you keep, set them to private and remove bio, photo, location and links.', 'Use a different username per context so profiles cannot be correlated.', 'Impersonation? Use the platform\'s report form.'],
   };
 }
@@ -98,7 +98,7 @@ function buildReport(q, findings, sources) {
   const plan = [...findings].sort((a, b) => (b.severity / (EFFORT_RANK[b.effort] + 1)) - (a.severity / (EFFORT_RANK[a.effort] + 1)));
   const potential = Math.min(100, score + findings.reduce((s, f) => s + f.severity, 0));
   return {
-    generatedAt: new Date().toISOString(), subject: maskId(q), score, potentialScore: potential, sourcesChecked: sources,
+    generatedAt: new Date().toISOString(), subject: maskId(q), identifier: q, identifierType: q.includes('@') ? 'Email address' : 'Username / handle', score, potentialScore: potential, sourcesChecked: sources,
     rating: score >= 75 ? 'Low exposure' : score >= 45 ? 'Moderate exposure' : 'High exposure',
     summary: { totalFindings: findings.length, byLevel, dataTypesExposed: exposed },
     findings: [...findings].sort((a, b) => b.severity - a.severity),
@@ -107,10 +107,12 @@ function buildReport(q, findings, sources) {
     note: 'Results come from live public sources (XposedOrNot, Gravatar, GitHub, RDAP, GitLab, Hacker News, Keybase, DEV). Absence of a finding does not prove absence of exposure.'
   };
 }
+const ftable = f => f.fields && f.fields.length ? `<p><b>Data found:</b></p><table>${f.fields.map(x => `<tr><th style="width:28%">${esc(x.k)}</th><td>${esc(x.v)}</td></tr>`).join('')}</table>` : '';
+const itemHtml = i => `<li><b>${esc(i.name)}</b> ${esc(i.date || '')}${i.url ? ` - <a href="${esc(i.url)}">${esc(i.url)}</a>` : ''}${i.info && i.info.title ? `<br>${esc(i.info.title)}` : ''}${i.info && i.info.description ? `<br><i>${esc(i.info.description)}</i>` : ''}${i.data ? `<br>${esc(i.data)}` : ''}</li>`;
 function reportHtml(r) {
   const rows = r.findings.map(f => `<h3>${esc(f.name)} <span style="color:${LEVEL_COLOR[f.level]}">[${esc(f.level)}]</span></h3>
 <p><b>Category:</b> ${esc(f.type)} · <b>First seen:</b> ${esc(f.firstSeen)} · <b>Impact:</b> −${f.severity} pts · <b>Ref:</b> ${esc(f.reference)}</p>
-<p>${esc(f.detail)}</p><p><b>Source:</b> ${esc(f.source)} · <a href="${esc(f.url)}">${esc(f.url)}</a></p><p><b>Data exposed:</b> ${f.exposed.map(esc).join(', ')}</p>${f.items ? `<ul>${f.items.map(i => `<li>${esc(i.name)} ${esc(i.date || '')} - ${esc(i.data)}</li>`).join('')}</ul>` : ''}<p><b>Risk:</b> ${esc(f.risk)}</p>
+<p>${esc(f.detail)}</p>${ftable(f)}<p><b>Source:</b> ${esc(f.source)} · <a href="${esc(f.url)}">${esc(f.url)}</a></p><p><b>Data exposed:</b> ${f.exposed.map(esc).join(', ')}</p>${f.items ? `<ul>${f.items.map(itemHtml).join('')}</ul>` : ''}<p><b>Risk:</b> ${esc(f.risk)}</p>
 <p><b>Removal (effort ${esc(f.effort)}, ~${esc(f.time)}):</b></p><ol>${f.steps.map(s => `<li>${esc(s)}</li>`).join('')}</ol>`).join('');
   const plan = r.actionPlan.map(p => `<tr><td>${p.priority}</td><td>${esc(p.source)}</td><td>${esc(p.effort)}</td><td>${esc(p.estimatedTime)}</td><td>+${p.pointsRecovered}</td></tr>`).join('');
   return `<!doctype html><meta charset="utf-8"><title>Privacy report</title><style>body{font:15px/1.5 system-ui;max-width:800px;margin:30px auto;padding:0 16px}table{border-collapse:collapse;width:100%}td,th{border:1px solid #ccc;padding:6px;text-align:left}</style>
@@ -146,7 +148,25 @@ function renderAudit(q, findings, sources = [], fp = null) {
     const ol = el('ol'); f.steps.forEach(s => ol.append(el('li', null, s)));
     d.append(sm, meta, el('div', null, f.detail), el('div', null, 'Data exposed: ' + f.exposed.join(', ')), el('div', null, 'Risk: ' + f.risk));
     if (f.url && /^https:\/\//.test(f.url)) { const a = el('a', null, 'View source ↗'); a.href = f.url; a.target = '_blank'; a.rel = 'noopener noreferrer'; d.append(a); }
-    if (f.items) { const ul = el('ul'); f.items.forEach(i => { const li = el('li'); if (i.url && /^https?:\/\//.test(i.url)) { const a = el('a', null, i.name); a.href = i.url; a.target = '_blank'; a.rel = 'noopener noreferrer'; li.append(a); } else li.textContent = `${i.name}${i.date ? ' (' + i.date + ')' : ''} — ${i.data}`; ul.append(li); }); d.append(el('div', 'muted', f.id === 'footprint' ? 'Profiles found:' : 'Breaches:'), ul); }
+    if (f.fields && f.fields.length) {
+      const tb = el('table', 'kv'); f.fields.forEach(x => { const tr = el('tr'); tr.append(el('th', null, x.k), el('td', null, x.v)); tb.append(tr); });
+      d.append(el('div', 'muted', 'Data found:'), tb);
+    }
+    if (f.items) {
+      const ul = el('ul', 'items');
+      f.items.forEach(i => {
+        const li = el('li');
+        if (i.url && /^https?:\/\//.test(i.url)) { const a = el('a', null, i.name); a.href = i.url; a.target = '_blank'; a.rel = 'noopener noreferrer'; li.append(a); }
+        else li.append(el('b', null, i.name));
+        if (i.date) li.append(el('small', 'muted', ` (${i.date})`));
+        if (i.records) li.append(el('small', 'muted', ` · ${Number(i.records).toLocaleString()} records`));
+        if (i.info && i.info.title && i.info.title !== i.name) li.append(el('div', 'sub', i.info.title));
+        if (i.info && i.info.description) li.append(el('div', 'sub muted', i.info.description));
+        if (i.data) li.append(el('div', 'sub muted', 'Data exposed: ' + i.data));
+        ul.append(li);
+      });
+      d.append(el('div', 'muted', f.id === 'footprint' ? 'Profiles found (public page title and description):' : 'Records:'), ul);
+    }
     d.append(el('div', 'fix', `Removal steps (effort ${f.effort}, ~${f.time}):`), ol);
     box.append(d);
   });
@@ -165,6 +185,22 @@ function renderAudit(q, findings, sources = [], fp = null) {
 const download = (name, type, text) => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([text], { type })); a.download = name; a.click(); };
 $('dlHtml').onclick = () => lastData && download('privacy-report.html', 'text/html', reportHtml(lastData));
 $('dlJson').onclick = () => lastData && download('privacy-report.json', 'application/json', JSON.stringify(lastData, null, 2));
+const loadLogo = () => new Promise(res => {
+  const i = new Image();
+  i.onload = () => { const c = document.createElement('canvas'); c.width = i.naturalWidth; c.height = i.naturalHeight; c.getContext('2d').drawImage(i, 0, 0); res({ url: c.toDataURL('image/png'), w: c.width, h: c.height }); };
+  i.onerror = () => res(null); i.src = 'logo.png';
+});
+$('dlPdf').onclick = async () => {
+  if (!lastData) return;
+  const b = $('dlPdf'); b.disabled = true; const old = b.textContent; b.textContent = 'Building PDF…';
+  try {
+    if (!window.jspdf || !window.buildReportPdf) throw new Error('PDF library failed to load. Reload the page and retry.');
+    const doc = window.buildReportPdf(lastData, await loadLogo());
+    const stamp = lastData.generatedAt.slice(0, 16).replace(/[:T]/g, '-');
+    doc.save(`trivectra-privacy-report-${stamp}.pdf`);
+  } catch (e) { msg($('auditMsg'), 'Could not create the PDF: ' + e.message, 'err'); }
+  finally { b.disabled = false; b.textContent = old; }
+};
 $('printRpt').onclick = () => { if (!lastData) return; const w = window.open('', '_blank'); if (!w) return msg($('auditMsg'), 'Pop-up blocked; use Download HTML instead.', 'err'); w.document.write(reportHtml(lastData)); w.document.close(); w.print(); };
 $('saveReport').onclick = () => { setFile($('vfile'), lastReport); show('vault'); };
 

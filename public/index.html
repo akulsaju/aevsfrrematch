@@ -36,7 +36,7 @@
 <div><h3 style="margin-top:0">Summary</h3><div id="summary"></div></div></div>
 <h3>Detailed findings</h3><div class="row" id="sources"></div><div id="manual"></div><div id="findings"></div>
 <div id="planWrap"><h3>Prioritised action plan <small class="muted">(best score gain per effort first)</small></h3><ol id="plan"></ol></div>
-<div class="row"><button class="primary" id="dlHtml">⬇ HTML report</button><button class="ghost" id="dlJson">⬇ JSON</button><button class="ghost" id="printRpt">🖨 Print / PDF</button><button class="ghost" id="saveReport">🔒 Encrypt report in Vault</button></div>
+<div class="row"><button class="primary" id="dlPdf">&#11015; PDF report</button><button class="ghost" id="dlHtml">⬇ HTML report</button><button class="ghost" id="dlJson">⬇ JSON</button><button class="ghost" id="printRpt">🖨 Print / PDF</button><button class="ghost" id="saveReport">🔒 Encrypt report in Vault</button></div>
 </div>
 </section>
 
@@ -70,5 +70,5 @@
 </section>
 </main>
 <footer><div>Encryption happens in your browser. The server never sees keys or plaintext.</div><div class="made">Made by <b>Saiqua</b> and <b>Akul</b></div></footer>
-<script src="qrcode.js"></script><script src="app.js"></script>
+<script src="qrcode.js"></script><script src="jspdf.min.js"></script><script src="report-pdf.js"></script><script src="app.js"></script>
 </body></html>

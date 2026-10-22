@@ -71,3 +71,12 @@ a{color:#7fb0ff;text-decoration:none}a:hover{text-decoration:underline}
 .tile .go{margin-top:10px;color:#7fb0ff;font-weight:600}
 .brand{cursor:pointer}.made{margin-top:6px}.made b{background:linear-gradient(90deg,#1a5cff,#00e5ff);-webkit-background-clip:text;background-clip:text;color:transparent}
 @media(max-width:800px){.tiles{grid-template-columns:1fr}.hero.big h2{font-size:30px}}
+
+/* audit: data found */
+table.kv{width:100%;border-collapse:collapse;margin:4px 0 8px;font-size:.92em}
+table.kv th,table.kv td{text-align:left;vertical-align:top;padding:5px 8px;border-bottom:1px solid var(--line)}
+table.kv th{width:30%;color:var(--mut);font-weight:600}
+table.kv td{word-break:break-word}
+.finding ul.items{columns:1;list-style:none;padding-left:0}
+.finding ul.items li{padding:6px 0;border-bottom:1px solid var(--line)}
+.finding ul.items .sub{font-size:.88em;margin-top:2px;word-break:break-word}
